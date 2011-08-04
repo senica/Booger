@@ -1,0 +1,13 @@
+@charset "utf-8";
+/* CSS Document */
+.core-menus-wrapper > .core-menus-parent{ display:inline-block; position:relative; margin-right:15px; cursor:pointer }
+.core-menus-title{ white-space:nowrap; text-decoration:none; font-size:18px; color:#999; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+.core-menus-wrapper > .core-menus-parent:hover > .core-menus-title{ color:#fff; }
+.core-menus-children .core-menus-parent:hover > .core-menus-title{ color:#222; }
+.core-menus-children-wrapper{ display:none; position:absolute; left:-10px; top:20px; padding:10px; }
+.core-menus-parent{ position:relative; }
+.core-menus-parent:hover > .core-menus-children-wrapper{ display:inline-block; }
+.core-menus-children{ width:150px; display:inline-block; padding:8px; background:#FFF; border:1px solid #CCC; border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px; }
+.core-menus-children-wrapper > .core-menus-children > .core-menus-parent > .core-menus-children-wrapper{ display:none; position:absolute; left:150px; top:0px; padding:0 10px; }
+.core-menus-children-wrapper > .core-menus-children > .core-menus-parent:hover > .core-menus-children-wrapper{ display:inline-block; }
+

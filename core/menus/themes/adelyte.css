@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+.core-menus-wrapper *{ font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; font-size:18px; }
+.core-menus-title{ text-decoration:none; color:#CCC; margin-right:15px; white-space:nowrap; padding:5px 0; display:block; }
+.core-menus-title:hover{ color:#fff; }
+
+.core-menus-children-wrapper .before{ width:200px; height:40px; background:url('./images/adelyte_header.png'); background-repeat:no-repeat; }
+.core-menus-children{ padding:0 10px; width:180px; background:url('./images/adelyte_bg.png'); background-repeat:repeat-y; }
+.core-menus-children .core-menus-children{ background:none; }
+.core-menus-children-wrapper .after{ width:200px; height:40px; background:url('./images/adelyte_footer.png'); background-repeat:no-repeat; }

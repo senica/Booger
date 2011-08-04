@@ -1,0 +1,21 @@
+@charset "utf-8";
+/* CSS Document */
+.core-blog-sidebar-content{ /*padding-left:10px !important;*/  padding-right:0px !important; }
+.core-blog-new-post{ cursor:pointer; white-space:nowrap; position:relative; border-bottom:1px solid #CCC; margin-bottom:5px; padding-bottom:5px; margin-right:1em !important; }
+.core-blog-new-post img{ position:absolute; top:0px; left:-25px; }
+.core-blog-new-post:hover{ color:#999; }
+.core-blog-fl-pg-title-child{ margin-left:15px; }
+.core-blog-fl-pg-title{ white-space:nowrap; cursor:pointer; position:relative; }
+.core-blog-fl-pg-title:hover{ color:#999; }
+
+.core-blog-fl-pg-title:hover .core-blog-sidebar-title-menu{ display:inline-block; }
+
+.core-blog-sidebar-title-menu{  color:#222; position:fixed; display:none; padding-right:15px; z-index:100; }
+.core-blog-sidebar-title-menu-content{  position:relative; display:inline-block; width:100px; padding:5px 5px 5px 5px; background:#fff; border:1px solid #999; border-radius:10px; -webkit-border-radius:10px; -moz-border-radius:10px; }
+.core-blog-sidebar-title-menu-content * { font-family:Verdana, Arial, sans-serif; font-size:18px; color#222; }
+.core-blog-sidebar-title-menu-content .edit:hover,
+.core-blog-sidebar-title-menu-content .delete:hover,
+.core-blog-sidebar-title-menu-content .options:hover{ color:#999; cursor:pointer; }
+.core-blog-sidebar-title-menu-content .arrow{ width:9px; height:11px; position:absolute; right:-9px; z-index:100; top:8px; background:url("./images/menu_arrow.png"); background-repeat:no-repeat; }
+
+#core-blog-tag-list .clear{ width:12px; height:12px; display:inline-block; background:url('images/clear.png'); margin-right:3px; }

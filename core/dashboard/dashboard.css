@@ -1,0 +1,9 @@
+@charset "utf-8";
+/* CSS Document */
+/* Admin Background */
+#core-dashboard-postit{ margin:10px 0 0 10px; background:url("images/postit.png"); width:410px; height:410px; }
+#core-dashboard-tabs{ position:absolute; bottom:40px; left:30px; background:url("images/tabs.png"); width:382px; height:63px; }
+#core-dashboard-minimize{ position:absolute; top:5px; right:230px; background:url("images/minimize.png"); width:274px; height:56px; }
+#core-dashboard-start{ position:absolute; top:200px; right:210px; background:url("images/start.png"); width:257px; height:68px; }
+#core-dashboard-logo{ position:absolute; bottom:40px; right:10px; background:url("images/booger_logo_transparent.png"); width:183px; height:86px; }
+#core-dashboard-click{ position:absolute; top:400px; left:500px; background:url("images/click.png"); width:446px; height:96px; }

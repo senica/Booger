@@ -1,0 +1,5 @@
+@charset "utf-8";
+/* CSS Document */
+.core-slideshow-wrapper{ position:relative; overflow:hidden; }
+.core-slideshow-item-wrapper{ overflow:hidden; }
+.core-slideshow-meta{ position:absolute; bottom:0px; width:100%; overflow:hidden; }

@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+#core-comments-sidebar-list div{ white-space:nowrap; }
+#core-comments-sidebar-list .number{ min-width:20px; display:inline-block; text-align:right; margin-right:10px; color:#0F3; font-size:22px; font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif; }
+#core-comments-sidebar-list a{ text-decoration:none; }
+#core-comments-sidebar-list .total:hover{ color:#06F; }
+#core-comments-sidebar-list .approved:hover{ color:#0F3; }
+#core-comments-sidebar-list .pending:hover{ color:#F90; }
+#core-comments-sidebar-list .spam:hover{ color:#F00; }
+
+#core-comments-admin-tabs .website a{ text-decoration:none; color:#06F; }
+
+#core-comments-admin-tabs .status{ position:absolute; right:5px; top:5px; }
+#core-comments-admin-tabs .status .approved{ color:#0F3; font-size:small; margin-left:7px; }
+#core-comments-admin-tabs .status .pending{ color:#F90; font-size:small; margin-left:7px; }
+#core-comments-admin-tabs .status .spam{ color:#F00; font-size:small; margin-left:7px; }
+#core-comments-admin-tabs .status .notspam{ color:#F00; font-size:small; margin-left:7px; }

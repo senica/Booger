@@ -1,0 +1,18 @@
+@charset "utf-8";
+/* CSS Document */
+.core-user-group-title-text:hover .core-user-group-sidebar-title-menu{ display:inline-block; }
+
+.core-user-group-parent .core-user-group-parent{ margin-left:15px; }
+#core-user-group-dialog div{ white-space:nowrap; }
+#core-user-group-dialog .create{ margin-top:15px; }
+#core-user-group-dialog div span{ display:inline-block; width:100px; }
+
+.core-user-group-parent{ white-space:nowrap; }
+.core-user-group-img{ margin-right:5px; }
+
+.core-user-group-sidebar-title-menu{  color:#222; position:fixed; display:none; padding-right:40px; z-index:100; }
+.core-user-group-sidebar-title-menu-content{  position:relative; display:inline-block; width:100px; padding:5px 5px 5px 5px; background:#fff; border:1px solid #999; border-radius:10px; -webkit-border-radius:10px; -moz-border-radius:10px; }
+.core-user-group-sidebar-title-menu-content * { font-family:Verdana, Arial, sans-serif; font-size:18px; color#222; }
+.core-user-group-sidebar-title-menu-content *:hover{ color:#999; cursor:pointer; }
+.core-user-group-sidebar-title-menu-content .arrow{ width:9px; height:11px; position:absolute; right:-9px; z-index:100; top:8px; background:url("./images/menu_arrow.png"); background-repeat:no-repeat; }
+

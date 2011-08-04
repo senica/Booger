@@ -1,0 +1,9 @@
+<?php
+$bg->add_shortcode('content');
+$bg->add_shortcode('home-title-1');
+$bg->add_shortcode('home-content-1');
+$bg->add_shortcode('home-title-2');
+$bg->add_shortcode('home-content-2');
+$bg->add_shortcode('home-content-3');
+$bg->add_shortcode('footer');
+?>

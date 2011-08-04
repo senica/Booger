@@ -1,0 +1,14 @@
+@charset "utf-8";
+/* CSS Document */
+.core-menus-wrapper{ display:inline-block; z-index:1001; }
+.core-menus-wrapper, .core-menus-wrapper *{ position:relative; }
+.core-menus-wrapper > .core-menus-parent{ display:inline-block; }
+
+/*Level 1*/
+.core-menus-children-wrapper{ display:none; position:absolute; left:-10px; top:20px; padding:10px; }
+.core-menus-parent:hover > .core-menus-children-wrapper{ display:block; }
+
+/*Level 2 and Up*/
+.core-menus-children-wrapper .core-menus-children-wrapper{ display:block; position:relative; left:10px; top:0px; padding:0; }
+.core-menus-children-wrapper .core-menus-children-wrapper .core-menus-children{ padding:0 8px; }
+

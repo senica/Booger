@@ -1,0 +1,107 @@
+<?php
+//ini_set('display_errors', 1);
+//error_reporting(E_ALL);
+/*	Usage:
+*	[core_menus { "style":1, "include":[1,3], "levels":2, "before_title":["text",[1,2]] }]
+*	type	-	The type of content to get.  Such as, 'page', 'post'.  If not set, it will get all content.
+*	style	-	integer. default 1. Style of menu to use.
+*	include	-	array of integers. IDs of pages you want to build menus with
+				default is all pages with parent_id of 0
+	levels	-	integer. the number of levels to dig down to. default is all levels
+				"levels":0 will give you only the top level
+	theme	-	name of theme to use. default is no theme. You can also just style in your site's css file.
+	before_wrapper -array.
+					element 1 is the html to display before the specified element
+					element 2 is an array of levels to include the before text at.
+						If you don't specify element 2, then it will add the text at every level.
+					Example: "before_title":["text",[1,2]]
+							In this example, the word "text" will be printed before the <div class="title">
+							tag on levels 1 and 2.
+	before_parent
+	before_title
+	before_children-wrapper
+	before_children
+	after_*			-array.  See corresponding before_*
+*/
+$bg->add_shortcode('core_menus', 'core_menus_func');
+
+function core_menus_func($opt=false){
+	global $bdb, $bg;
+	if(isset($opt->include)){
+		$iq = '';
+		foreach($opt->include as $include){
+			$iq .= "id='$include' OR ";	
+		}
+		$iq = substr($iq, 0, strlen($iq)-4);
+		$iq .= ' ';
+	}else{ $iq = "parent_id='0'"; }
+	
+	//Get menu style
+	switch($opt->style){
+		case 1:
+			$cols = "title,id,guid";
+			$bg->add_css(URL.'/core/menus/styles/menu1.css');
+			break;
+		
+		case 2:
+			$cols = "title,id,guid";
+			$bg->add_css(URL.'/core/menus/styles/menu2.css');
+			break;
+		
+		default:
+			$cols = "title,id,guid";
+			break;
+	}
+	
+	//Get menu theme
+	if(isset($opt->theme)){
+		$bg->add_css(URL.'/core/menus/themes/'.$opt->theme.'.css');		
+	}
+	
+	$before = function($tag,$level) use ($opt){
+		$tag = 'before_'.$tag;
+		if( isset($opt->{$tag}) && ( !isset($opt->{$tag}[1]) || in_array($level,$opt->{$tag}[1]) ) ){ return html_entity_decode($opt->{$tag}[0]); }	
+	};
+	
+	$after = function($tag,$level) use ($opt){
+		$tag = 'after_'.$tag;
+		if( isset($opt->{$tag}) && (!isset($opt->{$tag}[1]) || in_array($level,$opt->{$tag}[1]) ) ){ return html_entity_decode($opt->{$tag}[0]); }	
+	};
+	
+	$tree = function($id, $tl=1, $cl=1, $tree) use ($before,$after){
+		global $bdb;
+		$results = $bdb->get_results("SELECT title,id,guid FROM ".PREFIX."_content WHERE parent_id='$id'");
+		if(count($results) > 0){ 
+			echo $before('children',$cl).'<div class="core-menus-children">';
+			$i = 1;
+			foreach($results as $result){
+				$extra = '';
+				if($i == 1){ $extra .= ' first'; }
+				if($i == count($results)){ $extra .= ' last'; }
+				echo $before('parent',$cl).'<div class="core-menus-parent'.$extra.'">'.$before('title',$cl).'<a href="'.$result->guid.'" class="core-menus-title'.$extra.'">'.$result->title.'</a>'.$after('title',$cl);
+					echo $before('children-wrapper',$cl).'<div class="core-menus-children-wrapper">';
+						( $cl < $tl || !isset($tl) ) ? $tree($result->id, $tl, $cl+1, $tree) : '';
+					echo '</div>'.$after('children-wrapper',$cl);
+				echo '</div>'.$after('parent',$cl);
+				$i++;
+			}
+			echo '</div>'.$after('children',$cl);
+		}
+	};
+	
+	
+	$query = "SELECT $cols FROM ".PREFIX."_content WHERE $iq ".((isset($opt->type))?"AND type='".$opt->type."'":"");
+	$results = $bdb->get_results($query);
+	if(count($results) > 0){ 
+		echo $before('wrapper',0).'<div class="core-menus-wrapper">';
+		foreach($results as $result){
+			echo $before('parent',0).'<div class="core-menus-parent">'.$before('title',0).'<a href="'.$result->guid.'" class="core-menus-title">'.$result->title.'</a>'.$after('title',0);
+				echo $before('children-wrapper',0).'<div class="core-menus-children-wrapper">';
+					( $opt->levels > 0 || !isset($opt->levels) ) ? $tree($result->id, $opt->levels, 1, $tree) : '';
+				echo '</div>'.$after('children-wrapper',0);
+			echo '</div>'.$after('parent',0);		
+		}
+		echo '</div>'.$after('wrapper',0);
+	}
+}
+?>
