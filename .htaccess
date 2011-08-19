@@ -1,0 +1,11 @@
+#AddHandler application/x-httpd-php53 .php
+# BEGIN Booger
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) /index.php?guid=$1 [L,QSA] #QSA appends get variables
+</IfModule>
+# END Booger

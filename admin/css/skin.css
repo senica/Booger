@@ -1,0 +1,237 @@
+@charset "utf-8";
+/* CSS Document */
+
+body,html{ 
+	text-align:left; padding:20px;
+	background:#fcfcfc;
+	width:100%; height:100%; padding:0; margin:0; font-family:Arial, Helvetica, sans-serif; overflow:hidden; }
+iframe{ border:0; }
+.submit{ margin:0 !important; width:auto !important; height:auto !important; padding:3px 10px 5px 10px !important; border:1px solid #13455B !important; color:#fff !important; font-size:13px !important; font-weight:bold;  border-radius:20px; -moz-border-radius:20px; -webkit-borde-radius:20px; background:-webkit-gradient( linear, left bottom, left top, color-stop(0.15, rgb(33,114,151)), color-stop(0.61, rgb(41,140,186))); background:-moz-linear-gradient( center bottom, rgb(33,114,151) 15%, rgb(41,140,186) 61%); }
+.submit:hover{ border:1px solid #fff !important; }
+.bg-error{ width:100%; background-color: #FFFFE0; border: 1px solid #E6DB55; margin:2px; padding:3px; font-family:Arial, Helvetica, sans-serif; font-size:16px;  }
+.error{ border:2px solid #F00 !important; }
+
+/* Admin Top Panel */
+#bg-admin-panel-wrapper{ border:0; width:100%; height:143px; padding:0; margin:0; }
+#bg-admin-panel-top-bar-wrapper{
+	border-bottom:1px solid #555;
+	position:relative;
+	height:26px;
+	width:100%;
+	background:-webkit-gradient( linear,left bottom,left top,color-stop(0.1, rgb(255,255,255)),color-stop(0.4, rgb(184,184,184)),color-stop(0.66, rgb(189,189,189)),color-stop(1, rgb(224,224,224))	);
+	background:-moz-linear-gradient( center bottom,rgb(255,255,255) 10%,rgb(184,184,184) 40%,rgb(189,189,189) 66%,rgb(224,224,224) 100% );
+}
+
+/* Admin Top Panel Columns */
+#bg-admin-top-bar-col-one{ width:70%; display:inline-block; }
+#bg-admin-top-bar-col-two{ width:29%; display:inline-block; margin:2px 0 0 0; text-align:right; }
+
+/* Admin Toolbox */
+#bg-admin-toolbox-wrapper{ background-image:url('../images/top_toolbox_bg.png'); background-repeat:repeat-x; height:92px; width:100%; }
+#bg-admin-toolbox-logo{ background-image:url('../images/booger_logo.png'); background-repeat:no-repeat; background-position:60px 5px; height:92px; width:100%; }
+#bg-admin-toolbox-logo.active{ background-image:url('../images/booger_logo_transparent.png'); }
+#bg-admin-toolbox{ overflow:hidden; padding:10px; height:92px; white-space:nowrap; }
+.bg-admin-tool-title{ font-family:Arial, Helvetica, sans-serif; font-size:10px; }
+.bg-admin-tool-wrapper{ display:inline; margin:0 10px 10px 0px; cursor:move; float:left; }
+.bg-admin-tool-wrapper *{ display:inline; }
+
+/* Admin Tabs */
+#bg-admin-tabs{ background:#f6f6f6; height:21px; width:100%; border-top:2px solid #a9a9a9; border-bottom:2px solid #a9a9a9; }
+#bg-admin-tabs .bg-admin-tab{ position:relative; background:#f6f6f6; padding:0px 5px 2px 5px; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; font-size:14px; margin:0px 0px 0px 5px; display:inline-block; box-shadow:2px 2px 5px #333333; -moz-box-shadow:2px 2px 5px #333333; -webkit-box-shadow:2px 2px 5px #333333; border-radius:0px 0px 10px 10px; -moz-border-radius:0px 0px 10px 10px; -webkit-border-radius:0px 0px 10px 10px; }
+#bg-admin-tabs .bg-admin-tab:hover{ background:#fff; box-shadow:1px 1px 3px #333333; -moz-box-shadow:1px 1px 3px #333333; -webkit-box-shadow:1px 1px 3px #333333; cursor:pointer; }
+
+/* Admin Content */
+#bg-admin-content{	width:100%;	border:0; margin:0; overflow:auto; }
+.bg-admin-page{ position:fixed; top:0px; left:0px; z-index:0; display:none; }
+.bg-admin-page.active{ display:block; }
+
+/* Admin Sidebar */
+#bg-admin-sidebar-wrapper{ /*overflow:hidden;*/ position:fixed; right:0px; top:10px; display:inline-block; padding:2px 0 2px 2px; background:#cbcbcb;
+-webkit-border-top-left-radius: 5px;
+-webkit-border-bottom-left-radius: 5px;
+-moz-border-radius-topleft: 5px;
+-moz-border-radius-bottomleft: 5px;
+border-top-left-radius: 5px;
+border-bottom-left-radius: 5px;
+border:1px solid #6f6f6f;
+min-height:150px;
+}
+#bg-admin-sidebar-wrapper.shrink{ width:0px; border:0; margin:0; padding:0; }
+#bg-admin-sidebar-sidetab{ position:absolute; left:-25px; top:20px; width:25px; height:123px; background:url('../images/sidetab.png'); }
+#bg-admin-sidebar-top{ padding:5px; }
+/*#bg-admin-sidebar-sidetab:hover{ filter:alpha(opacity=100); -moz-opacity:1.0; -khtml-opacity:1.0; opacity:1.0; }*/
+
+#bg-admin-sidebar{	width:200px; }
+#bg-admin-sidebar .content{ height:400px; }
+.core-files-parent{ cursor:pointer; }
+.core-files-img{ margin-right:5px; }
+.core-files-title{	white-space:nowrap; }
+.core-files-child{ display:none; margin-left:15px; }
+.core-files-title-text{ position:relative; }
+.core-files-right-menu{ position:absolute; top:15px; background:#fff; z-index:99; border:1px solid #666; padding:5px; }
+.core-files-rename-input{ position:absolute; top:0px; left:0px; padding:0px; margin:0px; }
+.ui-accordion .ui-accordion-header a { display: block; font-size:1em !important; padding:2px .5em 2px 2em !important; }
+
+
+/* Admin Bottom Bar */
+#bg-admin-bottom-bar{ position:fixed; bottom:0; background-image:url('../images/top_bg.png'); background-repeat:repeat-x; height:26px; width:100%; }
+#bg-admin-bottom-bar .bg-admin-tab{ position:relative; bottom:-6px; background:#f6f6f6; padding:0px 5px 2px 5px; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; font-size:14px; margin:0px 0px 0px 5px; display:inline-block; box-shadow:2px 2px 5px #333333; -moz-box-shadow:2px 2px 5px #333333; -webkit-box-shadow:2px 2px 5px #333333; border-radius:10px 10px 0px 0px; -moz-border-radius:10px 10px 0px 0px; -webkit-border-radius:10px 10px 0px 0px; }
+#bg-admin-bottom-bar .bg-admin-tab:hover{ background:#fff; box-shadow:1px 1px 3px #333333; -moz-box-shadow:1px 1px 3px #333333; -webkit-box-shadow:1px 1px 3px #333333; cursor:pointer; }
+.bg-admin-tab-alt{ position:absolute; background-color:#FF9; border:1px solid #333; color:#333; font-family:monospace; white-space:nowrap; padding:3px; font-size:12px; top:-25px; pointer-events:none; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;  }
+.bg-admin-tab-close{ display:none; position:absolute; top:-10px; right:-10px; padding:0px 5px 2px; border-radius:25px; -webkit-border-radius:25px; -moz-border-radius:25px; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; font-size:12px; color:#fff; background:#000; }
+.bg-admin-tab:hover .bg-admin-tab-close{ display:inline-block; }
+.bg-admin-tab-edit{ display:inline-block; padding:0 2px; font-size:10px; color:#00C; display:inline-block; }
+.bg-admin-tab-save{ display:inline-block; padding:0 2px; font-size:10px; color:#00C; display:inline-block; }
+#bg-admin-bottom-bar .bg-admin-tab-code-edit{ background:#09C; }
+#bg-admin-bottom-bar .bg-admin-tab-tv-edit{ background:#96C; }
+#bg-admin-bottom-bar .bg-admin-post{ background:#0C3; }
+
+.bg-admin-tab-menu-wrapper{ display:none; position:absolute; padding-bottom:12px;; bottom:15px; left:0px;  }
+.bg-admin-tab-menu{ display:inline-block; position:relative; background:#fff; border:1px solid #999; padding:5px; border-radius:10px; -webkit-border-radius:10px; -moz-border-radius:10px; }
+.bg-admin-tab-menu div{ color:#222; font-size:18px; font-family: Verdana, Arial, sans-serif; white-space:nowrap; }
+.bg-admin-tab-menu div:hover{ color:#999; }
+.bg-admin-tab-menu .arrow{ height:9px; width:11px; position:absolute; left:10px; bottom:-9px; background:url("../images/menu_arrow_down.png"); background-repeat:no-repeat; }
+.bg-admin-tab:hover .bg-admin-tab-menu-wrapper{ display:inline-block; }
+
+/* Admin Bottom Bar Columns */
+#bg-admin-bottom-bar-col-one{ width:90%; display:inline-block; }
+#bg-admin-bottom-bar-col-two{ position:fixed; bottom:2px; right:5px; }
+
+/* Admin New Page */
+#core-pages-title{ width:400px; }
+#core-pages-permalink-wrapper{ font-size:10px; }
+
+/* Admin Login Page */
+html#bg-admin-login-html,body#bg-admin-login-body{ border:0; margin:0; padding:0; height:100%; width:100%; background-color:#F9F9F9; }
+#bg-admin-login-wrapper{ position:relative; top:50%; text-align:center; }
+#bg-admin-login{ margin-top:-200px; }
+#bg-admin-login-logo{ margin:0 0 0 0; display:inline-block; background-image:url("../images/booger_logo.png"); width:183px; height:86px; }
+#bg-admin-login-error-wrapper{ text-align:center; width:300px; display:inline-block; margin:0 0 10px 0; }
+#bg-admin-login-error{ padding:5px; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; display:none; background-color: #FFFFE0; border: 1px solid #E6DB55; width:300px; }
+#bg-admin-login-msg-wrapper{ text-align:center; width:300px; display:inline-block; margin:0 auto 10px; }
+#bg-admin-login-msg{ font-size:small; padding:5px; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; display:block; background-color:#f2f2f2; border: 1px solid #f0f0f0; width:300px; }
+#bg-admin-login-box{ text-align:left; padding:20px; font-size:14px; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;  color:#aaa; -webkit-box-shadow: 2px 2px 10px #666666; -moz-box-shadow: 2px 2px 10px #666666; box-shadow: 2px 2px 10px #666666 ; display:inline-block; height:200px; width:300px; border:0; border-radius:10px; -moz-border-radius:10px; -webkit-borde-radius:10px; background:-webkit-gradient(linear, 0% 100%, 0% 0%, color-stop(0.15, rgb(242,242,242)), color-stop(0.61, rgb(255,255,255))); background:-moz-linear-gradient( center bottom, rgb(242,242,242) 15%, rgb(255,255,255) 61% ); }
+#bg-admin-login-box input{ font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif; font-size:16px; margin-bottom:20px; padding:5px 10px 5px 10px; width:275px; height:30px; background-color:#fbfbfbf; border:1px solid #e5e5e5; }
+#bg-admin-remember{ display:inline-block; font-size:12px; }
+#bg-admin-remember input{ padding:0; margin:0; width:auto; height:auto; }
+#bg-admin-login-box .submit{ float:right; }
+#bg-admin-lost{ display:inline-block; margin:10px 0 0 0; color:#000; width:300px; text-align:left; font-size:12px; }
+#bg-admin-lost a{ color:#21759B; }
+#bg-admin-lost a:hover{ color:#D54E21; }
+
+.bg-box{
+	padding:20px 5px 5px 5px;
+	background:#CCC;
+	border:3px solid #000;
+	text-align:center;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size:18px;
+	border-radius:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	position:absolute;
+}
+
+.bg-box-close{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url("../images/close.png");
+	position:absolute;
+	top:-8px;
+	right:-8px;
+}
+
+.bg-function-yesNo{
+	padding:10px 20px;
+	position:absolute;
+	background:#CCC;
+	border:3px solid #000;
+	display:inline-block;
+	text-align:center;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size:18px;
+	border-radius:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;	
+}
+
+.bg-function-yesNo input{
+	padding:5px 10px;
+	margin:5px;
+	background:#CCC;
+	border:1px solid #000;
+	display:inline-block;
+	text-align:center;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size:14px;
+	border-radius:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;	
+	-moz-box-shadow: 3px 3px 4px #000;
+	-webkit-box-shadow: 3px 3px 4px #000;
+	box-shadow: 3px 3px 4px #000;
+}
+
+.button{
+	margin:0px;
+	display:inline-block;
+	color:#333;
+	border-radius:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	padding:2px 5px;
+	border:1px solid #999;
+	font-size:14px;
+	background-image:-webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.13, rgb(235,235,235)),
+		color-stop(0.41, rgb(163,163,163)),
+		color-stop(1, rgb(255,255,255))
+	);
+	background-image:-moz-linear-gradient(
+		center bottom,
+		rgb(235,235,235) 13%,
+		rgb(163,163,163) 41%,
+		rgb(255,255,255) 100%
+	);
+}
+.button:hover{
+	color:#fff;
+	cursor:pointer;
+}
+.button.active{
+	color:#CCC;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.39, rgb(23,23,23)),
+		color-stop(0.7, rgb(115,115,115))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(23,23,23) 39%,
+		rgb(115,115,115) 70%
+	);	
+}
+
+.input{
+	margin:0px;
+	padding:2px 5px;
+	background:#fff;
+	border:1px solid #999;
+	display:inline-block;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size:14px;
+	border-radius:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;		
+}
+
+/*Loaded iFrame*/
+.iframe100	{ width:100%; height:100%; }
+
+.input-error { border:2px solid #f00; }

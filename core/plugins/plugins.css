@@ -1,0 +1,13 @@
+@charset "utf-8";
+/* CSS Document */
+#bg-admin-sidebar-top .plugins{ margin:0 3px; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5; display:inline-block; width:20px; height:15px; background:url('images/plugin.png'); }  
+#bg-admin-sidebar-top .plugins:hover{ filter:alpha(opacity=100); -moz-opacity:1.0; -khtml-opacity:1.0; opacity:1.0; }
+
+#core-plugins-accordion > div{ height:200px; }
+/*#core-site-settings-wrapper span{ width:200px; display:inline-block; float:left; }
+#core-site-settings-wrapper div{ margin-bottom:10px; }
+#core-site-settings-wrapper input,
+#core-site-settings-wrapper select{ width:250px; }
+#core-site-settings-wrapper textarea{ height:100px; width:250px; }
+#core-site-settings-wrapper button{ float:right; }*/
+
