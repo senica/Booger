@@ -15,12 +15,12 @@ $file = $_GET['file'];
 require_once('assets/config.php');
 require_once('assets/build.php');
 if(file_exists(THEME_DIR.'/functions.php')){ require_once(THEME_DIR.'/functions.php'); } //Added this so themes can add admin hooks.  May not be a good idea if the functions.php file gets too big
-if($_GET['build-plugins'] == 'true'){ require_once('assets/build_plugins.php'); } //Some ajax calls may require that all the plugins be built
+if($_GET['build-plugins'] == 'true'){ require_once('assets/build_plugins.php'); } //Some ajax calls may require that all the plugins be built, current example is the actions plugin
 
 $dir = explode('/', dirname($file));
 $dir = $dir[count($dir)-1];
 
-//Authorization exceptions to files.
+//Authorization exceptions to files. Public should always be allowed to access these files regardless of ACL
 $exceptions = array("admin/auth.php", "admin/login.php", "admin/logout.php", "admin/verify_cookies.php");
 
 if(!in_array($file, $exceptions) && $bg->user->alias != 'admin'){ //Allow the admin alias to bypass everything

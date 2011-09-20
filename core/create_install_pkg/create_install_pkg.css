@@ -1,0 +1,8 @@
+@charset "utf-8";
+/* CSS Document */
+#core-create-install-pkg-content fieldset .files{ max-height:300px; width:500px; overflow:auto; }
+.core-create-install-pkg-child{ display:none; margin-left:15px; }
+.core-create-install-pkg-parent{ cursor:pointer; }
+.core-create-install-pkg-img{ margin-right:5px; }
+.core-create-install-pkg-title{  white-space:nowrap; }
+

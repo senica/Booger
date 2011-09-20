@@ -292,7 +292,7 @@ if($_GET['action'] == "fetch"){
 	<body>
 	<?php	
 	echo '<script>var comet = window.parent.comet;</script>';
-	function send($message, $action=false){ echo '<script>comet.process({message:"'.$message.'", action:"'.$action.'"});</script>'; flush(); usleep(250000); }
+	function send($message, $action=false, $speed='slow'){ echo '<script>comet.process({message:"'.$message.'", action:"'.$action.'"});</script>'; flush(); if($speed == 'slow'){ sleep(1); }else{ usleep(1000); } }
 	
 	function dec($value){
 		$value = base_convert(bin2hex($value), 16, 10);
@@ -325,28 +325,12 @@ if($_GET['action'] == "fetch"){
 				$file	= substr($content, $pointer, $length); $pointer+=$length;
 				if($type == '0a01'){ //Directory
 					//Make directory
-					send("Directory ".$file);
+					send("Creating directory ".$file, false, 'fast');
 					if(mkdir($file, 0755) === false){ send("Failed ".$file); die(); }
 				}else if($type == '0a00'){ //File
-					send("File ".$file);
+					send("Inflating file ".$file, false, 'fast');
 					$size_of_content	= dec(substr($content, $pointer, 4)); $pointer+=4;
 					$data				= substr($content, $pointer, $size_of_content); $pointer+=$size_of_content;	
-					$number_of_tables	= dec(substr($content, $pointer, 1)); $pointer+=1;
-					for($i=0; $i<$number_of_tables; $i++){
-						$table_length	= dec(substr($content, $pointer, 2)); $pointer+=2;
-						$table			= substr($content, $pointer, $table_length); $pointer+=$table_length;
-						//Inflate
-						$table_pointer = 0;
-						while($table_pointer < strlen($table)){
-							$key = substr($table, $table_pointer, 1); $table_pointer+=1;
-							$key = unpack("H*", $key);
-							$key = hex2bin($key[1]);
-							$value = substr($table, $table_pointer, 2); $table_pointer+=2;
-							$value = unpack("H*", $value);
-							$value = hex2bin($value[1]);
-							$data = str_replace($key, $value, $data);
-						}
-					}
 					if(file_put_contents($file, $data) === false){ send("Failed ".$file); die(); }
 				}else{ //Error
 					send("Package is Malformed"); die();

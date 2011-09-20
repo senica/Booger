@@ -4,6 +4,8 @@ echo '<div id="core-site-settings-tabs">';
 	echo '<ul>';
 		echo '<li><a href="#core-site-settings-tabs-general">General</a></li>';
 		echo '<li><a href="#core-site-settings-tabs-mail">Mail</a></li>';
+		echo '<li><a href="#core-site-settings-tabs-misc">Miscellaneous</a></li>';
+		$bg->call_hook('site-settings-tab-title');
 	echo '</ul>';
 	
 	echo '<div id="core-site-settings-tabs-general" style="height:330px; overflow-y:scroll">';
@@ -52,7 +54,11 @@ echo '<div id="core-site-settings-tabs">';
 		echo '</div>';
 		$bg->call_hook('mail-settings');
 	echo '</div>';
-	$bg->call_hook('site-settings-new-tab');
+	
+	echo '<div id="core-site-settings-tabs-misc">';
+		$bg->call_hook('site-settings-misc');
+	echo '</div>';
+	$bg->call_hook('site-settings-tab-content');
 echo '</div>'; //End of Tabs wrapper
 
 echo '<div><button class="button" type="submit" >Save</button></div>';

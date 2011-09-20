@@ -16,6 +16,6 @@
 		<h1 class="site-title">[site-title]</h1>
 		[global {'name':'tag-line', 'default':'a Booger site posing as an art canvas....'}]
 		[search {'form_template':'$input', 'temp':'page', 'in':[['page','content,page-heading'],['post','content,page-heading']], 'length':300 }]
-		<nav>[core_menus {'levels':0, 'type':'page', 'exclude':[3,4]}]</nav>
+		<nav>[menus {'levels':0, 'type':'page', 'exclude':[3,4]}]</nav>
 	</div>
 </div>

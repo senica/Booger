@@ -626,11 +626,6 @@ jQuery("#core-toolbar-tv-tools-wrapper .shortcode").live("click", function(){
 	jQuery("#core-toolbar-shortcode-options").hide();
 });
 
-
-
-
-
-
 //moved here so it could be triggered from parents
 //range should be false if you are passing in an element
 core_toolbar.handleFocus = function(tv, el, f, frame, range){
@@ -699,6 +694,28 @@ jQuery(document).bind("core_pages.loaded core_blog.loaded editAsPage.loaded", fu
 			return false;
 		}										 
 	});
+	
+	//CTRL+V paste images
+	//Thanks Nick Retallack http://stackoverflow.com/questions/6333814/how-does-the-paste-image-from-clipboard-functionality-work-in-gmail-and-google-ch
+	//Future release should save image instead of putting information in src tag
+	jQuery(f).bind("paste.paste", function(event){
+		var items = event.originalEvent.clipboardData.items; //Use original event because we are inside a jQuery event
+		var item = items[0];
+		//Only handle images for now.
+		if(item.type == "image/png" || item.type == "image/jpeg" || item.type == "image/jpg" || item.type == "image/bmp"){
+			var blob = item.getAsFile();
+			var reader = new FileReader();
+			reader.onload = function(event){
+				var range = core_toolbar.focus.range;
+				range.extractContents();
+				var el = core_toolbar.focus.doc.createElement("img");
+				range.insertNode(el);
+				jQuery(el).attr("src", event.target.result);
+			};
+			reader.readAsDataURL(blob);		
+		}
+	});
+
 	
 	//Give focus to an element inside a TV
 	jQuery(".template-variable", f).bind("mouseup.toolbar", function(event){ //On click

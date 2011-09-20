@@ -7,6 +7,7 @@
 *	type	-	The type of content to get.  Such as, 'page', 'post'.  If not set, it will get all content. Comma separated list
 *	include	-	array of integers. IDs of pages you want to build menus with
 				default is all pages with parent_id of 0
+	exclude	-	array of integers. IDs of pages to exclude from the menu.  Called after include
 	levels	-	integer. the number of levels to dig down to. default is all levels
 				"levels":0 will give you only the top level
 	parent	-	the parent id to read from
@@ -26,7 +27,7 @@
 	before_children
 	after_*			-array.  See corresponding before_*
 */
-$bg->add_shortcode('menu', 'core_menus_init');
+$bg->add_shortcode('menus', 'core_menus_init');
 
 function core_menus_none(){}
 
@@ -85,7 +86,17 @@ function core_menus_init($obj){
 		$include .= ')';
 	}
 	
-	$query = "SELECT $columns,id FROM ".PREFIX."_content WHERE type = $type $include AND parent_id = '$parent' AND status='published' AND NOW() > publish_on";
+	$exclude = '';
+	if(!empty($options->exclude)){
+		$exclude .= ' AND (';
+		foreach($options->exclude as $inc){
+			$exclude .= "id != '".$inc."' AND ";	
+		}
+		$exclude = substr($exclude, 0, strlen($exclude) - 4);
+		$exclude .= ')';
+	}
+	
+	$query = "SELECT $columns,id FROM ".PREFIX."_content WHERE type = $type $include $exclude AND parent_id = '$parent' AND status='published' AND NOW() > publish_on";
 	$results = $bdb->get_results($query);
 	if(!empty($results)){ 
 		$i = 1;

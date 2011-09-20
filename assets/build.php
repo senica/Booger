@@ -71,10 +71,20 @@ class Booger{
 	}
 	
 	//Takes the template content and an object (usually from a mysql query) and does a replace on key value pairs
+	//$replace_obj->content is assumed to be a serialized object
 	function template($template_content, $replace_obj){
 		$new = $template_content;
 		foreach($replace_obj as $k=>$v){
-			$new = str_replace('$'.$k, $v, $new); 	
+			if($k == 'content'){
+				$content = unserialize($v);
+				if($content !== false){
+					foreach($content as $l=>$w){
+						$new = str_replace('$'.$k.'->'.$l, $w, $new);	
+					}
+				}
+			}else{
+				$new = str_replace('$'.$k, $v, $new);
+			}
 		}
 		$new = str_replace('$class', $options->class, $new);
 		return $new;
@@ -124,6 +134,30 @@ class Booger{
 		} else {
 		  return true;
 		}	
+	}
+	
+	/***********************************************************************
+	* set_permissions
+	* Usually called from firstrun.php from within a plugin directory
+	* When a plugin is first dropped into the system, the admin may have not
+	* added assigned any permissions to the plugin.  A plugin author, can
+	* call this to assign or overwrite permissions that an admin may assign
+	* to a plugin.
+	* Usage: $bg->plugin_permissions('core_plugins', 'sitehead', 0, 1);
+	* $type is what settings to assign permissions to.
+	* This can be core_plugins, user_plugins, functions_acl, files_acl
+	* $name is the name of the plugin
+	* $permissions is the group id
+	* $active is 0 for no or 1 for yes
+	***********************************************************************/
+	function set_permissions($type, $name, $permissions=0, $active=0){
+		global $bdb;
+		$plugins = unserialize($this->settings->{$type});
+		$plugins->{$name} = (object) array();
+		$plugins->{$name}->active = trim($active);
+		$plugins->{$name}->permissions = trim($permissions);
+		$plugins = serialize($plugins);
+		$bdb->query("UPDATE ".PREFIX."_settings SET setting_value='".mysql_real_escape_string($plugins)."' WHERE setting_name='".$type."'");
 	}
 	
 	/***********************************************************************
@@ -354,6 +388,18 @@ class Booger{
 		global $bdb;
 		$result = $bdb->get_result("SELECT a.id,a.name,a.parent_id,a.email,a.website,a.created_on FROM ".PREFIX."_session as s LEFT JOIN ".PREFIX."_acl as a ON s.session_user_id=a.id WHERE session_data_check = '".mysql_real_escape_string($_COOKIE['bg_authenticated_user'])."' AND a.type='user'");
 		return ($result !== false) ? $result : false;
+	}
+	
+	//Get plugin url...only to be called from within a plugins main file
+	function plugin_url($display=true, $showfile=false, $dir=true){
+		$call = debug_backtrace(false, 1);
+		$file = $call[0]['file'];
+		if($dir === true){ $file = preg_replace('@\\\@', '/', dirname($file)); }
+		$url = str_replace(SITE, URL, $file);
+		if(!$display)
+			return (!$showfile) ? $url : $file;
+		else
+			echo (!$showfile) ? $url : $file;
 	}
 	
 	/********************************************************************

@@ -1,3 +1,4 @@
+<?php require(ASSETS.'/no_direct.php'); ?>
 <?php
 $bg->add_hook('admin-dashboard', 'core_dashboard_intro');
 $bg->add_hook('admin-dashboard', 'core_dashboard_notes');

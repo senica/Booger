@@ -9,11 +9,11 @@ $bg->add_shortcode('github', 'core_github_init');
 
 
 //Get response from Github
-function core_github_com($url){
-	$fp = fsockopen("ssl://api.github.com", 443, $errno, $errstr, 30);
+function core_github_com($url, $prefix='api'){
+	$fp = fsockopen("ssl://".$prefix.".github.com", 443, $errno, $errstr, 30);
 	if (!$fp){ echo 'Could not connect to Github'; return false; }
 	$out = "GET /".$url." HTTP/1.1\r\n";
-	$out .= "Host: api.github.com\r\n";
+	$out .= "Host: ".$prefix.".github.com\r\n";
 	$out .= "Connection: Close\r\n\r\n";
 	fwrite($fp, $out);
 	$buffer = '';
@@ -24,7 +24,14 @@ function core_github_com($url){
 	preg_match("/^content-length:\s*(\d+)\s*$/mi", $buffer, $matches);
 	$length = $matches[1];	
 	$content = substr($buffer, $length*-1, $length);
-	return json_decode($content);		
+	switch($prefix){
+		case "api":
+			return json_decode($content);
+			break;
+		case "raw":
+			return $content;
+			break;
+	}		
 }
 
 //Parse URLs to get what we need for the next call
@@ -59,11 +66,15 @@ function core_github_process($r, $resource, $options){
 				}
 			}
 			break;
+			
+		case "blob":
+			echo '<pre><code>'.$r.'</code></pre>';
+			break;
 	}	
 }
 
 //Setup URLs and parse object
-function core_github_init($obj){
+function core_github_init($obj, $prefix='api'){
 	$options = $obj->options;
 	
 	if(empty($options->resource)){ echo 'No Resource Set.'; return false;  }
@@ -74,9 +85,17 @@ function core_github_init($obj){
 		case "tags":
 			$url = 'repos/'.$options->user.'/'.$options->repo.'/git/refs/tags';
 			break;
+		
+		case "blob":
+			$url = $options->user.'/'.$options->repo.'/'.$options->path; //Path should be a relative path including the branch: master/admin/index.php
+			$prefix = 'raw'; //Query the raw.github.com
+			break;
+		
+		//case "references":
+			//$url = 'repos/'.$options->user.'/'.$options->repo.'/git/refs/heads/'.$options->branch;
 	}
 	
-	$response = core_github_com($url);
+	$response = core_github_com($url, $prefix);
 	if($response === false){ return false; }
 	
 	echo '<div class="core-github main-wrapper '.$options->class.'">';

@@ -16,13 +16,15 @@ function core_pages_shortcode_page_id($obj){ global $bg; echo $bg->page_id; }
 function core_pages_shortcode_page_list($obj){
 	//type: should be a comma separated list
 	//filter: can be things such as category:id
-	global $bdb;
+	//parent: can be a single integer or an array of integers
+	//id: can be a single integer or an array of integers
+	global $bdb, $bg;
 	$opt = $obj->options;
 	
 	$html = '';
-
+	
 	$type = 'AND (';
-	if(isset($opt->type)){
+	if(!empty($opt->type)){
 		$t = explode(',', $opt->type);
 		foreach($t as $c){
 			$type .= "c.type='".trim($c)."' OR ";		
@@ -33,22 +35,50 @@ function core_pages_shortcode_page_list($obj){
 	}
 	$type .= ')';
 	
+	$parent = '';
+	if(!empty($opt->parent)){
+		$parent = 'AND (';
+		if(is_numeric(trim($opt->parent))){
+			$parent .= "c.parent_id='".trim($opt->parent)."'";	
+		}else if(is_array(trim($opt->parent))){
+			foreach(trim($opt->parent) as $p){
+				$parent .= "c.parent_id='".trim($p)."' OR ";			 
+			}
+			$parent = substr($parent, 0, strlen($parent)-4);
+		}
+		$parent .= ')';
+	}
+	
+	$id = '';
+	if(!empty($opt->id)){
+		$id = 'AND (';
+		if(is_numeric(trim($opt->id))){
+			$id .= "c.id='".trim($opt->id)."'";	
+		}else if(is_array(trim($opt->id))){
+			foreach(trim($opt->id) as $p){
+				$id .= "c.id='".trim($p)."' OR ";			 
+			}
+			$id = substr($id, 0, strlen($id)-4);
+		}
+		$id .= ')';
+	}
+	
 	if(isset($opt->filter)){
 		foreach($opt->filter as $k=>$v){
 			switch($k){
 				case 'category':
-					$query = "SELECT c.* FROM ".PREFIX."_relations r LEFT JOIN ".PREFIX."_content c ON c.id=r.resource_id WHERE r.relation_id='".$v."' AND c.status='published' $type";
+					$query = "SELECT c.* FROM ".PREFIX."_relations r LEFT JOIN ".PREFIX."_content c ON c.id=r.resource_id WHERE r.relation_id='".$v."' AND c.status='published' $type $parent $id";
 					break;
 				case 'tag':
-					$query = "SELECT c.* FROM ".PREFIX."_relations r LEFT JOIN ".PREFIX."_content c ON c.id=r.resource_id WHERE r.relation_id='".$v."' AND c.status='published' $type";
+					$query = "SELECT c.* FROM ".PREFIX."_relations r LEFT JOIN ".PREFIX."_content c ON c.id=r.resource_id WHERE r.relation_id='".$v."' AND c.status='published' $type $parent $id";
 					break;
 				default:
-					$query = "SELECT c.* FROM ".PREFIX."_content c WHERE c.status='published' $type";
+					$query = "SELECT c.* FROM ".PREFIX."_content c WHERE c.status='published' $type $parent $id";
 					break;
 			}
 		}	
 	}else{
-		$query = "SELECT c.* FROM ".PREFIX."_content c WHERE c.status='published' $type";
+		$query = "SELECT c.* FROM ".PREFIX."_content c WHERE c.status='published' $type $parent $id";
 	}
 	
 	$results = $bdb->get_results($query);
@@ -57,12 +87,13 @@ function core_pages_shortcode_page_list($obj){
 		$content = unserialize($r->content);
 		$content = (isset($opt->tv)) ? $content[$tv] : $content['content'];
 		if(isset($opt->template)){ //Handle template passed in
-			$r = (array) $r;
 			$template = html_entity_decode($opt->template);	
-			foreach($r as $k=>$v){
-				$template = str_replace('$'.$k, $r[$k], $template);	
+			$html .= $bg->template($template, $r);
+		}else if(!empty($opt->template_file)){ //Handle specified template file
+			$file = file_get_contents($opt->template_file);
+			if($file !== false){
+				$html .= $bg->template($file, $r);
 			}
-			$html .= $template;
 		}else{
 			$html .= '<div class="page-list-item '.(($i==0)?'first':'').'">';
 				$html .= '<div class="page-list-title '.(($i==0)?'first':'').'"><a href="'.URL.'/'.$r->guid.'" class="page-list-link '.(($i==0)?'first':'').'">'.$r->title.'</a></div>';
