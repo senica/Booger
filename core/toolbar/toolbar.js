@@ -290,7 +290,7 @@ jQuery("#core-toolbar-tv-tools-wrapper .style").click( function(){ //Turn Styles
 			this.href = this.href.replace(/\?.*|$/, queryString);
 		});
 	}
-	jQuery(".styles-dropdown", this).slideToggle();																
+	jQuery(".styles-dropdown", this).toggle();																
 });
 jQuery(".core-toolbar-css-item").live("click", function(){
 	var range = core_toolbar.focus.range;
@@ -317,13 +317,24 @@ jQuery(".core-toolbar-css-item").live("click", function(){
 		}
 	//Insert element with tag
 	}else{	
-		var selectionContents = range.extractContents();	
-		var el = core_toolbar.focus.doc.createElement(meta.attr("cssTag"));
+		var selectionContents = range.extractContents();
+		var tags = jQuery.trim(meta.attr("cssTag"));
+		tags = tags.split(" ");
+		var prev_el = '';
+		var el = '';
+		jQuery.each(tags, function(index, tag){ //Handle lines in css such as pre code{} and create nested elements
+			el = core_toolbar.focus.doc.createElement(tag);
+			if(index == 0){
+				range.insertNode(el);
+				if(meta.attr("cssType") == "id"){ jQuery(el).attr("id", meta.attr("cssClass")); }
+				if(meta.attr("cssType") == "class"){ jQuery(el).addClass(meta.attr("cssClass")); }
+			}else{
+				jQuery(prev_el).append(el);		
+			}
+			prev_el = el;
+		});
 		el.appendChild(selectionContents);
-		range.insertNode(el);
-		if(jQuery(el).html() == ''){ jQuery(el).append(meta.attr("cssTag")); }
-		if(meta.attr("cssType") == "id"){ jQuery(el).attr("id", meta.attr("cssClass")); }
-		if(meta.attr("cssType") == "class"){ jQuery(el).addClass(meta.attr("cssClass")); }
+		if(jQuery(el).html() == ''){ jQuery(el).append(meta.attr("cssTag")); } //Prevent elements from collapsing
 	}
 });
 
@@ -488,8 +499,9 @@ jQuery("#core-toolbar-html").dialog({width:500, height:500, autoOpen:false, moda
 });
 jQuery("#core-toolbar-tv-tools-wrapper .html").click( function(){
 	jQuery("#core-toolbar-html .html").val(jQuery(core_toolbar.focus.tv).beautify({
-		indent_character:"\t",
+		indent_char:"\t",
 		indent_size:1,
+		unformatted:['a', 'code', 'pre'],
 		html_edit:true}) );
 	jQuery("#core-toolbar-html .html").htmlEdit();
 	jQuery("#core-toolbar-html").dialog('open');

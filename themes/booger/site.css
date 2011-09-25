@@ -31,6 +31,8 @@ form .blank{ background:#F99; }
 .font-color-7{ color:#FFFFFF; }
 .color-8{ background:#0A2643; }
 
+.code{ white-space:nowrap; overflow-x:scroll; background:#E2FAFF; border:1px solid #FF7F00; padding:10px; border-radius:7px; -moz-border-radius:7px; -webkit-border-radius:7px; }
+
 .round-corners{ border-radius:7px; -moz-border-radius:7px; -webkit-border-radius:7px; }
 
 #top-bar-wrapper{ width:100%; }
@@ -202,7 +204,7 @@ select.contact{ width:215px; }
 .core-github.tag-wrapper{ padding:10px 10px 0px; }
 .core-github.tag-link{ font-size:18px; }
 
-
+.docs-video, .docs-audio{ display:inline-block; color:#F90; font-size:small; padding:0px 0px 0px 5px; }
 
 
 

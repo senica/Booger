@@ -68,7 +68,7 @@ function core_github_process($r, $resource, $options){
 			break;
 			
 		case "blob":
-			echo '<pre><code>'.$r.'</code></pre>';
+			echo '<pre><code>'.htmlentities($r).'</code></pre>';
 			break;
 	}	
 }
@@ -90,9 +90,6 @@ function core_github_init($obj, $prefix='api'){
 			$url = $options->user.'/'.$options->repo.'/'.$options->path; //Path should be a relative path including the branch: master/admin/index.php
 			$prefix = 'raw'; //Query the raw.github.com
 			break;
-		
-		//case "references":
-			//$url = 'repos/'.$options->user.'/'.$options->repo.'/git/refs/heads/'.$options->branch;
 	}
 	
 	$response = core_github_com($url, $prefix);

@@ -20,3 +20,5 @@
 
 .float-left{ float:left; }
 .float-right{ float:right; }
+
+div pre code .code{ }
