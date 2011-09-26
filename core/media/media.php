@@ -2,7 +2,7 @@
 <?php
 $bg->add_hook('admin-storage', 'core_media_admin_storage');
 $bg->add_hook('admin-foot', 'core_media_admin_foot');
-$bg->add_hook('admin_tools', 'core_media_admin_tools');
+$bg->add_hook('admin-tools', 'core_media_admin_tools');
 
 function core_media_admin_tools(){
 	echo '<div class="media"><img src="'.URL.'/core/media/images/media.png" title="Media Manager" /></div>';		

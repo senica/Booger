@@ -354,6 +354,82 @@ jQuery("#core-toolbar-tv-tools-wrapper .lorem").live("click", function(event){
 	});
 });
 
+//Anchors
+jQuery("#core-toolbar-tv-tools-wrapper .anchor").live("click", function(event){
+	if(jQuery(event.target).parents(".anchor-dropdown").get(0)){ return false; }
+	var dd = jQuery(".anchor-dropdown", this);
+	dd.toggleClass('active');
+	var focus = false;
+	if(dd.hasClass('active')){
+		var get = function(el){
+			focus = el; //Update local focus point
+			el = el.focal;
+			if(el.tagName.toLowerCase() == 'a'){ //if element is a link, get name
+				var name = jQuery(el).attr("name");	
+			}else{ //otherwise set name to ''
+				var name = '';	
+			}
+			jQuery(".aname", dd).val(name);
+			
+		}
+		
+		get(core_toolbar.focus); //Get anchor name when anchor tool is clicked
+		
+		//When the element changes, get anchor name
+		jQuery(focus.tv).bind("core_toolbar.focus", function(event, focus){
+			get(focus);
+		});		
+		
+		//Check for positioning of dropdown
+		if(jQuery(dd).offset().left+jQuery(dd).width() > jQuery(focus.doc).width()){ jQuery(dd).css({'left':'auto', 'right':'0px'}); }
+		else{ jQuery(dd).css({'left':'0px', 'right':'auto'}); }
+		
+		//Apply Anchor
+		jQuery(".apply", dd).bind("click.anchor", function(){
+			var name = jQuery.trim(jQuery(".aname", dd).val());
+			name = name.replace(/\s/g, '_');
+			if(name == ''){ jQuery(".remove", dd).click(); } //If name is blank, remove any anchors
+			
+			if(focus.focal.tagName.toLowerCase() == 'a'){ //if element is an anchor, add anchor name.
+				jQuery(focus.focal).attr("name", name);	
+			}else if(focus.range && focus.range.toString().length > 0){ //if text is selected, wrap that in an anchor
+				var text = focus.range.extractContents();
+				var a = focus.doc.createElement("a");
+				focus.range.insertNode(a);
+				jQuery(a).attr("name", name).html(text);	
+			}else if(focus.focal.parentNode.tagName.toLowerCase() == 'a'){  //If element is already wrapped in an <a> add anchor name to that
+				jQuery(focus.focal.parentNode).attr("name", name);
+			}else if( jQuery(focus.focal).hasClass("template-variable") ){ //Inner wrap template variable in anchor
+				jQuery(focus.focal).wrapInner('<a name="'+name+'" />');
+			}else{ //wrap element in anchor
+				jQuery(focus.focal).wrap('<a name="'+name+'" />');
+			}												   
+		});
+		
+		//Remove Anchor
+		jQuery(".remove", dd).bind("click.anchor", function(){
+			if(focus.focal.tagName.toLowerCase() == 'a'){
+				var href = jQuery(focus.focal).attr("href");
+				if (typeof href !== 'undefined' && href !== false){ //If anchor is also a link, just remove the anchor
+					jQuery(focus.focal).removeAttr("name");
+				}else{ //Otherwise remove the entire <a> tag
+					jQuery(focus.focal).replaceWith(jQuery(focus.focal).html());
+				}
+			}else if(focus.focal.parentNode.tagName.toLowerCase() == 'a'){
+				var href = jQuery(focus.focal.parentNode).attr("href");
+				if (typeof href !== 'undefined' && href !== false){ //If anchor is also a link, just remove the anchor
+					jQuery(focus.focal.parentNode).removeAttr("name");
+				}else{ //Otherwise remove the entire <a> tag
+					jQuery(focus.focal).unwrap();
+				}	
+			}														
+		});
+	}else{
+		jQuery("*", dd).unbind(".anchor");
+		jQuery(focus.tv).unbind("core_toolbar.focus");
+	}
+});
+
 //Links
 jQuery("#core_toolbar_link").dialog({width:400, autoOpen:false, modal:true});
 jQuery("#core_toolbar_link_wrapper").accordion({active:false, autoHeight:false});
@@ -368,6 +444,15 @@ jQuery("#core_toolbar_link_wrapper h3.image").click( function(){ //get images
 });
 jQuery("#core_toolbar_link_wrapper h3.upload").click( function(){ //get uploads
 	jQuery("#core_toolbar_link_wrapper select.upload").load("/ajax.php?file=core/toolbar/link_get_pages.php&type=upload");													  
+});
+jQuery("#core_toolbar_link_wrapper h3.anchor").click( function(){ //get page anchors
+	var html = '';
+	jQuery("a[name]", core_toolbar.focus.doc).each( function(index, el){
+		var title = jQuery(el).html();
+		title = title.substr(0, 8);
+		html = html+'<option value="#'+jQuery(el).attr("name")+'">'+title+' - '+jQuery(el).attr("name")+'</option>';													   
+	});
+	jQuery("#core_toolbar_link_wrapper select.anchor").html(html);													  
 });
 jQuery("#core-toolbar-tv-tools-wrapper .link").live("click", function(){
 	jQuery("#core_toolbar_link").dialog('open'); //Show Link box
@@ -398,6 +483,8 @@ jQuery("#core_toolbar_link .ok").click( function(){
 		var json = '[core_url {\'pgid\':\''+jQuery("#core_toolbar_link select.image").val()+'\'}]';	
 	}else if(selected.hasClass("upload")){
 		var json = jQuery("#core_toolbar_link select.upload").val();	
+	}else if(selected.hasClass("anchor")){
+		var json = jQuery("#core_toolbar_link select.anchor").val();	
 	}
 	
 	//assign target

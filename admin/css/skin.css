@@ -85,6 +85,7 @@ min-height:150px;
 #bg-admin-bottom-bar .bg-admin-tab-code-edit{ background:#09C; }
 #bg-admin-bottom-bar .bg-admin-tab-tv-edit{ background:#96C; }
 #bg-admin-bottom-bar .bg-admin-post{ background:#0C3; }
+#bg-admin-bottom-bar-indicator{ position:absolute; width:0px; height:26px; background:#F93; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5; border:1px solid #C60; border-top:0; border-bottom:0; padding:0px 3px; }
 
 .bg-admin-tab-menu-wrapper{ display:none; position:absolute; padding-bottom:12px;; bottom:15px; left:0px;  }
 .bg-admin-tab-menu{ display:inline-block; position:relative; background:#fff; border:1px solid #999; padding:5px; border-radius:10px; -webkit-border-radius:10px; -moz-border-radius:10px; }

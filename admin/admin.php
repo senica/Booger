@@ -2,26 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <?php $bg->call_hook('admin-html-tag'); ?>>
 <head>
-<script>
-//http://www.html5rocks.com/tutorials/appcache/beginner/
-/*
-window.addEventListener('load', function(e) {
-  window.applicationCache.addEventListener('updateready', function(e) {
-    if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
-      // Browser downloaded a new app cache.
-      // Swap it in and reload the page to get the new hotness.
-      window.applicationCache.swapCache();
-      if (confirm('A new version of this site is available. Load it?')) {
-        window.location.reload();
-      }
-    } else {
-      // Manifest didn't changed. Nothing new to server.
-    }
-  }, false);
-
-}, false);
-*/
-</script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="<?php echo URL; ?>/assets/js/jquery.min.js"></script>
@@ -108,6 +88,16 @@ window.addEventListener('load', function(e) {
 				jQuery("#bg-admin-sidebar-sidetab").removeClass("moving");
 			});
 			
+			//Handle Tab Indicator
+			jQuery("#bg-admin-bottom-bar").bind("DOMSubtreeModified", function(event){ //I don't like the DOMSubtreeModified event, but DOMNodeInserted wasn't working
+				var i = jQuery("#bg-admin-bottom-bar-indicator");
+				if(jQuery(".active", this).get(0)){
+					var active = jQuery(".active", this);
+					i.animate({width:active.outerWidth()+'px', left:active.offset().left-3+'px'}, 'fast', 'swing');
+				}else{
+					i.animate({width:'0px', left:'0px'}, 'fast', 'swing');	
+				}
+			});		
 			
 		});//End Document Ready
 	</script>
@@ -126,6 +116,7 @@ window.addEventListener('load', function(e) {
 		<div id="bg-admin-sidebar"><?php $bg->call_hook('admin-sidebar'); ?></div>
 	</div>
 	<div id="bg-admin-bottom-bar">
+		<div id="bg-admin-bottom-bar-indicator"></div>
 		<div id="bg-admin-bottom-bar-col-one"><?php $bg->call_hook('admin-bottom-bar'); ?></div>
 		<div id="bg-admin-bottom-bar-col-two"><span id="bg-admin-logout" class="button">Logout</span></div>
 	</div>

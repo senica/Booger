@@ -1,6 +1,6 @@
 <?php require(ASSETS.'/no_direct.php'); ?>
 <?php
-$bg->add_hook('admin_tools', 'core_slideshow_admin_tools');
+$bg->add_hook('admin-tools', 'core_slideshow_admin_tools');
 $bg->add_hook('admin-foot', 'core_slideshow_admin_foot');
 $bg->add_hook('admin-storage', 'core_slideshow_admin_storage');
 

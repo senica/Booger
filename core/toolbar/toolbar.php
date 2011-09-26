@@ -9,7 +9,7 @@ function core_toolbar_foot(){
 	//Toolbox for template variables
 	echo '<div id="core-toolbar-tv-tools-wrapper">';
 		echo '<div id="core-toolbar-close"></div>';
-		$bg->call_hook('admin_tools');
+		$bg->call_hook('admin-tools');
 		echo '<div class="style" style="position:relative;"><img src="'.URL.'/core/toolbar/images/styles.png" title="Styles" /><div class="styles-dropdown"></div></div>';
 		echo '<div class="background"><img src="'.URL.'/core/toolbar/images/background.png" title="Set a Background Color or Image." /></div>';
 		echo '<div class="columns"><img src="'.URL.'/core/toolbar/images/columns.png" title="Columns" /></div>';
@@ -19,6 +19,11 @@ function core_toolbar_foot(){
 		echo '<div class="lorem"><img src="'.URL.'/core/toolbar/images/lorem.png" title="Lorem Ipsum - Filler Text" /><div class="lorem-dropdown">Number of Characters: <input type="text" class="characters" size="5" /><div class="button insert">Insert</div></div></div>';
 		echo '<div class="hold"><img src="'.URL.'/core/toolbar/images/hold.png" title="Hold Formatting Containers" /></div>';
 		echo '<div class="unwrap"><img src="'.URL.'/core/toolbar/images/unwrap.png" title="Remove Line Wrappers" /></div>';
+		echo '<div class="anchor"><img src="'.URL.'/core/toolbar/images/anchor.png" title="Create Page Anchor/Bookmark" />
+				<div class="anchor-dropdown">
+					<div><span style="display:inline-block; width:60px">Name:</span> <input type="text" class="aname" size="10" /> <input type="button" class="apply" value="Apply" /> <input type="button" class="remove" value="Remove" /></div>
+				</div>
+			</div>';
 		echo '<div class="link"><img src="'.URL.'/core/toolbar/images/link.png" title="Link to Pages" /></div>';
 		echo '<div class="unlink"><img src="'.URL.'/core/toolbar/images/unlink.png" title="Remove a Link" /></div>';
 		echo '<div class="margin" style="position:relative;"><img src="'.URL.'/core/toolbar/images/margin.png" title="Margins" />
@@ -117,6 +122,8 @@ function core_toolbar_storage(){
 					<div><div style="height:50px;"><select class="image"></select></div></div>
 					<h3 class="upload"><a href="#">Upload Link</a></h3>
 					<div><div style="height:50px;"><select class="upload"></select></div></div>
+					<h3 class="anchor"><a href="#">Anchor/Bookmark Link</a></h3>
+					<div><div style="height:50px;"><select class="anchor"></select></div></div>
 				</div>
 				<div><br /></div>
 				<div><div class="button ok" style="margin-right:10px;">OK</div><div class="button cancel">Cancel</div></div>
