@@ -2,6 +2,7 @@
 <?php
 $bg->add_hook('admin-storage', 'core_toolbar_storage');
 $bg->add_hook('admin-foot', 'core_toolbar_foot');
+$bg->add_css(THEME_URL.'/toolbar.css', 'site-head');
 
 function core_toolbar_foot(){
 	global $bg;

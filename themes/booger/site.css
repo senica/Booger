@@ -206,5 +206,8 @@ select.contact{ width:215px; }
 
 .docs-video, .docs-audio{ display:inline-block; color:#F90; font-size:small; padding:0px 0px 0px 5px; }
 
+.docs-menu .core-menus-children-wrapper,
+.docs-menu .core-docs_menus-children-wrapper{ padding-left:10px; }
+
 
 

@@ -5,7 +5,6 @@
 <title>[page-title]</title>
 <link type="text/css" href="[theme-url]/reset.css" rel="stylesheet" />
 <link type="text/css" href="[theme-url]/site.css" rel="stylesheet" />
-<link type="text/css" href="[theme-url]/toolbar.css" rel="stylesheet" />
 [sitehead]
 </head>
 

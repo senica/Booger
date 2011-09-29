@@ -280,9 +280,35 @@ jQuery("#core-toolbar-tv-tools-wrapper .unwrap").live("click", function(){
 
 //Styles List
 jQuery("#core-toolbar-tv-tools-wrapper .style").click( function(){ //Turn Styles into dropdown
-	if(jQuery(".styles-dropdown", this).is(":hidden")){
+	var wrapper = this;
+	var dd = jQuery(".styles-dropdown", wrapper);
+	if(dd.is(":hidden")){
 		//Update styles list
-		jQuery(".styles-dropdown", this).load("/ajax.php?file=core/toolbar/parse_styles.php");
+		jQuery.get("/ajax.php?file=core/toolbar/parse_styles.php", {}, function(json){
+			var css = jQuery.parseJSON(json);
+			if(typeof css.err !== 'undefined'){ dd.html(css.err); }
+			else{
+				dd.html(""); //Clear dropdown before appending styles
+				jQuery.each(css, function(index, obj){
+					var container = jQuery('<div class="core-toolbar-css-item"></div>');
+					dd.append(container);
+					if(typeof obj.notes !== 'undefined'){ //We have a comment, use that as our title
+						container.append('<div class="core-toolbar-css-title">'+obj.notes[0]+'</div>');
+						if(typeof obj.notes[1] !== 'undefined'){ //We have a second comment, use that as our description
+							container.append('<div class="core-toolbar-css-desc">'+obj.notes[1]+'</div>');	
+						}
+					}else if(obj.tag.substr(0, 1) == '.'){ //The first word is a class, use that as our title
+						var c = obj.tag.split(" ");
+						c = c[0].substr(1);
+						c = c.replace(/-|_/g, " ");
+						container.append('<div class="core-toolbar-css-title">'+c+'</div><div class="core-toolbar-css-desc">'+obj.tag+'</div>');
+					}else{
+						container.append('<div class="core-toolbar-css-title">'+obj.tag+'</div>');	
+					}
+					container.append('<div class="core-toolbar-css-tag">'+obj.tag+'</div>'); //Add full tag to be parsed when clicked on						  
+				});		
+			}
+		});
 		//Reload page styles
 		var doc = core_toolbar.focus.doc;
 		var queryString = '?reload=' + new Date().getTime();
@@ -290,52 +316,135 @@ jQuery("#core-toolbar-tv-tools-wrapper .style").click( function(){ //Turn Styles
 			this.href = this.href.replace(/\?.*|$/, queryString);
 		});
 	}
-	jQuery(".styles-dropdown", this).toggle();																
+	dd.toggle(); //Toogle open close state																
 });
 jQuery(".core-toolbar-css-item").live("click", function(){
-	var range = core_toolbar.focus.range;
-	if(range && range.toString()){ var size = range.toString().length; }else{ var size = 0; }
 	var focal = core_toolbar.focus.focal;
-	var psize = focal.innerText.length;
-	
-	var meta = jQuery(".meta", this);
-	
-	//No Tag is specified, so just handle classes
-	if(meta.attr("cssTag") == ""){
-		//We only handle classes, no IDs
-		if(meta.attr("cssType") == "class"){
-			if(size == 0 || size == psize){ //no text is selected, so append the class to the current selected element
-				if(jQuery(core_toolbar.focus.focal).hasClass(meta.attr("cssClass"))){ jQuery(core_toolbar.focus.focal).removeClass(meta.attr("cssClass")); }
-				else{ jQuery(core_toolbar.focus.focal).addClass(meta.attr("cssClass")); }		
-			}else{ //parse the selected text and add a span with the selected class
-				var extract = range.extractContents();
-				var el = core_toolbar.focus.doc.createElement("span");
-				el.appendChild(extract);
-				range.insertNode(el);
-				jQuery(el).addClass(meta.attr("cssClass"));
+	var size = -1; //default is not selection
+	var range = core_toolbar.focus.range;
+	if(typeof range !== 'undefined' && range != null){ size = range.toString().length; }
+	var psize = focal.innerText.length; //Get elements text size
+
+	//Split string and keep splitter to the right or the left
+	var split_hold = function(splitter, direction){
+		var buffer = '';
+		var obj = new Array();
+		var inbrkt = false
+		for(var i=0; i<this.length; i++){
+			if(this[i] == '['){
+				inbrkt = true;
+			}else if(this[i] == ']'){
+				inbrkt = false;	
+			}
+			
+			if(this[i] == splitter && inbrkt == false){ //Only split if not in a bracket
+				if(typeof direction !== 'undefined' && direction == "right"){ //If the splitter stays to the right...
+					if(buffer != ''){ obj.push(buffer); } //Push buffer to obj
+					buffer = this[i]; //Clear buffer and start with splitter 	
+				}else if(typeof direction !== 'undefined' && direction == "left"){ //If the splitter stays to the left...
+					buffer = buffer + this[i]; //Add splitter to the end of the buffer
+					obj.push(buffer); //Push buffer to obj
+					buffer = ''; //Clear buffer
+				}else{ //Just split
+					if(buffer != ''){ obj.push(buffer); } //Push buffer to obj
+					buffer = '';
+				}
+			}else{
+				buffer = buffer + this[i];	
 			}
 		}
-	//Insert element with tag
-	}else{	
-		var selectionContents = range.extractContents();
-		var tags = jQuery.trim(meta.attr("cssTag"));
-		tags = tags.split(" ");
-		var prev_el = '';
-		var el = '';
-		jQuery.each(tags, function(index, tag){ //Handle lines in css such as pre code{} and create nested elements
-			el = core_toolbar.focus.doc.createElement(tag);
-			if(index == 0){
-				range.insertNode(el);
-				if(meta.attr("cssType") == "id"){ jQuery(el).attr("id", meta.attr("cssClass")); }
-				if(meta.attr("cssType") == "class"){ jQuery(el).addClass(meta.attr("cssClass")); }
-			}else{
-				jQuery(prev_el).append(el);		
-			}
-			prev_el = el;
-		});
-		el.appendChild(selectionContents);
-		if(jQuery(el).html() == ''){ jQuery(el).append(meta.attr("cssTag")); } //Prevent elements from collapsing
+		if(buffer != ''){ obj.push(buffer); } //Push remainder of the buffer to the obj
+		return obj;
 	}
+	
+	//Parse attributes
+	var pa = function(str){ //Convert attribute string to object Thanks voigtan http://stackoverflow.com/questions/7407905/jquery-insert-set-of-attributes-as-string-to-tag
+		var temp = '';
+		if(typeof str !== 'undefined' && str !== null){
+			jQuery.each(str, function(index, attr){
+				attr = attr.replace(/\[/, '').replace(/\]/, ''); //Remove brackest from [colspan=2][size=2]
+				temp = temp+' '+attr;
+			});
+		}
+		var el = jQuery('<span '+temp+'>')[0]; //Create temporary element and attach string attributes to it
+		attr = {};
+		for (var i=0, attrs=el.attributes, l=attrs.length; i<l; i++){ //Iterate over the attributes and create an object
+			attr[attrs.item(i).nodeName] = attrs.item(i).value;
+		}
+		return attr;
+	}
+										
+	var tag = jQuery(".core-toolbar-css-tag", this).html();
+	var f = jQuery(focal); //This should the be focus element
+	var last = f; //Set the last element to be added.  Here we don't have one so we just use the focus
+	tag = tag.replace(/\s+\[/g, '['); //Collapse space between element and attribute bracket td [colspan=2] should be td[colspan=2]
+	tag = tag.replace(/&amp/g, '&').replace(/&gt;/g, ' > ').replace(/&lt;/g, ' < '); //Undo htmlentites, add space so we can split by it
+	//tag = tag.split(/\s+(?=[^\[\]]*\[|$)/); //Split by spaces but not when spaces are in brackets - split by a space but only when we can see a [ or the end of the line ahead and we don't see a [ or a ] first; brackets are for attributes
+	//Had problems with regex split and brackets, so I just spelled it out...
+	var hold = new Array();
+	var buffer = '';
+	var isbkt = false;
+	for(var i=0; i<tag.length; i++){
+		if(tag[i] == '['){ isbkt = true; }
+		if(tag[i] == ']'){ isbkt = false; }
+		if(tag[i] == " " && isbkt === false){
+			if(jQuery.trim(buffer) != ''){
+				hold.push(buffer);
+			}
+			buffer = '';
+		}else{
+			buffer = buffer+tag[i];	
+		}
+	}
+	hold.push(buffer); //Add last chunk
+	tag = hold;
+	jQuery.each(tag, function(index, i){ //Go through each segment of the tag split by a space
+		i = split_hold.call(i, ".", "right"); //Split classes from element identifiers td.class is now td .class
+		jQuery.each(i, function(index, sw){
+			if(sw == '<'){ //Set focus to focus' parent element
+				f = f.parent();	
+			}else if(sw == '>'){ //Set the focus as the last added element
+				f = last;
+			}else if(sw.substr(0, 1) == '.'){ //Add class to last added element.  last will be focus if this is the first run
+				var attr = sw.match(/\[(.*?)\]/g); //Get all attributes
+				sw = sw.replace(/\[.*\]/, ''); //Remove all attributes and just leave the class
+				
+				if(size <= 0 || size == psize){ //Either no text is selected, all the text of an element is selected, or an image is selected; add/remove classes from last element
+					last.attr(pa(attr)); //Add attributes
+					if(last.hasClass(sw.substr(1))){
+						last.removeClass(sw.substr(1));						   
+					}else{
+						last.addClass(sw.substr(1));
+					}			
+				}else{ //Only a partial range is selected, so create a span for the range
+					var extract = range.extractContents();
+					var span = core_toolbar.focus.doc.createElement("span");
+					span.appendChild(extract);
+					range.insertNode(span);
+					last = jQuery(span); //Assign span as last inserted node
+					last.attr(pa(attr)); //Add attributes
+					if(last.html() == ''){ last.html(last.attr('data-default')); } //Assign default-data attribute value as html if html is blank
+					last.addClass(sw.substr(1)); //Since we are creating the element, we will only be ADDING classes to it
+				}				
+			}else{ //This should be an element tag
+				var attr = sw.match(/\[(.*?)\]/g); //Get all attributes
+				sw = sw.replace(/\[.*\]/, ''); //Remove all attributes and just get element tag
+				var n = jQuery(core_toolbar.focus.doc.createElement(sw)); //Create element
+				n.attr(pa(attr)); //Add attributes
+				if(size >= 0){ //Replace the range selection with this element as long as the element has more than 0 text in it or the range is greater than 0
+					var extract = range.extractContents();
+					range.insertNode(n[0]);
+					size = -2; //Arbitrary number to signify that we are on an element basis from now on.
+					last = n;
+					if(last.html() == ''){ last.html(last.attr('data-default')); } //Assign default-data attribute value as html if html is blank
+				}else if(size != -1){ //Items like images have a -1 size, so we can't append to it
+					f.append(n);
+					last = n;
+					if(last.html() == ''){ last.html(last.attr('data-default')); } //Assign default-data attribute value as html if html is blank
+				}else{ } //Don't append anything for items like images; size == -1
+			}
+		});			  
+	});	
 });
 
 //Lorem Ipsum - Filler Text

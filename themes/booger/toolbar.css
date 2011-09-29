@@ -1,5 +1,5 @@
 @charset "utf-8";
-/* CSS Document */
+
 .background-white{ background:#FFFFFF; }
 .background-dark-blue{ background:#144374; }
 .background-light-blue{ background:#3e77b3; }
@@ -22,3 +22,10 @@
 .float-right{ float:right; }
 
 div pre code .code{ }
+
+ul li{ }
+
+/*Documentation Table*/
+table.docs > thead > tr > td[data-default="Property"] td[data-default="Type"] td[data-default="Description for a test"][test="what is this"] < < tbody > tr > td td[colspan="2"]{} 
+div > img[src="/admin/images/booger_logo.png"] span[data-default="Here is an image"]{}
+
