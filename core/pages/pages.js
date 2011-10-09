@@ -298,7 +298,7 @@ jQuery(".core-pages-sidebar-title-menu .edit").live("click", function(){
 	if(z){
 		jQuery(".bg-admin-tab[alt='"+alt+"']").click();	
 	}else{
-		var loc = bg.url+"/"+alt;
+		var loc = "/"+alt;
 		jQuery(bg.pages).append('<div class="bg-admin-page" rel="'+t+'"><iframe rel="'+t+'" dbid="'+p.attr("rel")+'" src="'+loc+'?noparse" onLoad="jQuery.iframeResize(this); core_pages.events(this);"></iframe></div>');
 		jQuery("#bg-admin-bottom-bar-col-one").append('<div id="" class="bg-admin-tab" rel="'+t+'" alt="'+alt+'" dbid="'+p.attr("rel")+'">'+p.attr("dtitle")+'<div class="bg-admin-tab-menu-wrapper"><div class="bg-admin-tab-menu"><div class="arrow"></div><div class="title">'+alt+'</div><hr /><div class="refresh">Refresh</div><div class="close">Close</div><div class="save">Save</div></div></div></div>');
 		
@@ -324,7 +324,7 @@ jQuery(".core-pages-sidebar-title-menu .edit").live("click", function(){
 				//regex the html to replace <script tag with <!--script and <\/script> with </script-->
 				//Likewise, saving should reverse the process
 				var val = clone.html();
-				val = val.replace(/<!--script/g, '<script').replace(/<\/script-->/g, '</script>');
+				val = val.replace(/<!--script/ig, '<script').replace(/<\/script-->/ig, '</script>'); //Do not replace php tags as the browser will mess them up when the page loads again .replace(/<!--\?php(.*?)\?-->/ig, '<?php'+"$1"+'?>');
 				
 				if(jQuery(el).hasClass("global")){
 					var tvt = jQuery(el).attr("rel");

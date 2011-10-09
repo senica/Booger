@@ -84,7 +84,13 @@
 	}
 	
 	//Parse content shortcodes
-	echo parseShortCodes($holder);
+	//We are currently running parsing code that is between php inside editable areas, should we parse after the php?
+	$before_filter = parseShortCodes($holder);
+	if(isset($_GET['noparse'])){ echo $before_filter; } //Don't parse php in admin
+	else{
+		$after_filter = $bg->call_content_filter($before_filter); //Call content filters
+		echo $after_filter;
+	}
 
 	
 	function getShortCode($shortcode, $options=false, $stack){

@@ -40,8 +40,8 @@ function core_pages_shortcode_page_list($obj){
 		$parent = 'AND (';
 		if(is_numeric(trim($opt->parent))){
 			$parent .= "c.parent_id='".trim($opt->parent)."'";	
-		}else if(is_array(trim($opt->parent))){
-			foreach(trim($opt->parent) as $p){
+		}else if(is_array($opt->parent)){
+			foreach($opt->parent as $p){
 				$parent .= "c.parent_id='".trim($p)."' OR ";			 
 			}
 			$parent = substr($parent, 0, strlen($parent)-4);
@@ -54,8 +54,8 @@ function core_pages_shortcode_page_list($obj){
 		$id = 'AND (';
 		if(is_numeric(trim($opt->id))){
 			$id .= "c.id='".trim($opt->id)."'";	
-		}else if(is_array(trim($opt->id))){
-			foreach(trim($opt->id) as $p){
+		}else if(is_array($opt->id)){
+			foreach($opt->id as $p){
 				$id .= "c.id='".trim($p)."' OR ";			 
 			}
 			$id = substr($id, 0, strlen($id)-4);

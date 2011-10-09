@@ -415,7 +415,8 @@ jQuery(".core-toolbar-css-item").live("click", function(){
 						last.removeClass(sw.substr(1));						   
 					}else{
 						last.addClass(sw.substr(1));
-					}			
+					}
+					if(last.html() == ''){ last.html(last.attr('data-default')); } //Assign default-data attribute value as html if html is blank
 				}else{ //Only a partial range is selected, so create a span for the range
 					var extract = range.extractContents();
 					var span = core_toolbar.focus.doc.createElement("span");
@@ -705,8 +706,8 @@ jQuery("#core-toolbar-tv-tools-wrapper .html").click( function(){
 		//Auto Update
 		if(jQuery("#core-toolbar-html .auto").is(":checked")){
 			var val = jQuery(this).val();
-			//Chrome (maybe others) wont' let us post a <script> tag back to the html.  So we'll handle this on the save
-			val = val.replace(/<script/g, '<!--script').replace(/<\/script>/g, '</script-->');
+			//Chrome (maybe others) wont' let us post a <script> or <?php tag back to the html.  So we'll handle this on the save. For now we make them comments
+			val = val.replace(/<script/g, '<!--script').replace(/<\/script>/ig, '</script-->').replace(/<\?php([\s\S]*?)\?>/igm, '<!--?php'+"$1"+'?-->');
 			jQuery(core_toolbar.focus.tv).html(val);	
 		}															   
 	});
@@ -714,8 +715,8 @@ jQuery("#core-toolbar-tv-tools-wrapper .html").click( function(){
 });
 jQuery("#core-toolbar-html .update").click( function(){
 	var val = jQuery("#core-toolbar-html .html").val();
-	//Chrome (maybe others) wont' let us post a <script> tag back to the html.  So we'll handle this on the save
-	val = val.replace(/<script/g, '<!--script').replace(/<\/script>/g, '</script-->');
+	//Chrome (maybe others) wont' let us post a <script> or <?php tag back to the html.  So we'll handle this on the save. For now we make them comments
+	val = val.replace(/<script/g, '<!--script').replace(/<\/script>/ig, '</script-->').replace(/<\?php([\s\S]*?)\?>/igm, '<!--?php'+"$1"+'?-->');
 	jQuery(core_toolbar.focus.tv).html(val);													 
 });
 
@@ -834,6 +835,10 @@ jQuery("#core-toolbar-tv-tools-wrapper .shortcode").live("click", function(){
 	jQuery("#core-toolbar-shortcode-options").hide();
 });
 
+
+
+
+
 //moved here so it could be triggered from parents
 //range should be false if you are passing in an element
 core_toolbar.handleFocus = function(tv, el, f, frame, range){
@@ -894,13 +899,72 @@ jQuery(document).bind("core_pages.loaded core_blog.loaded editAsPage.loaded", fu
 		jQuery("#core-toolbar-shortcode-options").hide();	
 	});
 	
-	//CTRL+S to Save
+	//KEYUP functions
 	jQuery(f).bind("keydown.ctrls", function(event){
+		//CTRL+S to Save
 		if(event.keyCode == 83 && event.ctrlKey){
 			var rel = jQuery(frame).attr("rel");
 			jQuery("#bg-admin-bottom-bar-col-one .bg-admin-tab[rel='"+rel+"'] .save").click();
 			return false;
-		}										 
+		}
+		
+		//CTRL+Enter
+		if(event.keyCode == 13 && event.ctrlKey){
+			//If the focus is inside a table row (TR), then duplicate the TR and insert it after the current TR
+			if(jQuery(core_toolbar.focus.focal).parents("tr:first")[0]){
+				var tr = jQuery(core_toolbar.focus.focal).parent("tr:first");
+				tr.clone(true).insertAfter(tr);
+				
+			}
+		}
+		
+		//TAB Move to next or prev element
+		if(event.keyCode == 9){
+			var tabprev = function(el){
+				var t = el.parent().prev();
+				if(t.children(":last-child")[0]){
+					return t.children(":last-child")[0];
+				}else if(!t[0] && el.parent()[0].tagName != 'body'){
+					return tabnext(el.parent());
+				}else{
+					return false;	
+				}
+			}
+			var tabnext = function(el){
+				var t = el.parent().next();
+				if(t.children(":first-child")[0]){
+					return t.children(":first-child")[0];
+				}else if(!t[0] && el.parent()[0].tagName != 'body'){
+					return tabnext(el.parent());
+				}else{
+					return false;	
+				}
+			}
+			var el = jQuery(core_toolbar.focus.focal);
+			if(event.shiftKey){
+				if(el.prev()[0]){
+					el = el.prev()[0];	
+				}else{
+					el = tabprev(el);
+				}
+			}else{
+				if(el.next()[0]){
+					el = el.next()[0];	
+				}else{
+					el = tabnext(el);
+				}
+			}
+			if(el === false){ return false; }
+			var doc = core_toolbar.focus.doc;
+			el.focus();	
+			var s = doc.getSelection();
+			if(s.rangeCount > 0) s.removeAllRanges();
+			var range = doc.createRange();
+			range.selectNodeContents(el);
+			s.addRange(range);	
+			core_toolbar.handleFocus(core_toolbar.focus.tv, el, doc, core_toolbar.focus.frame, false);
+			return false;
+		}
 	});
 	
 	//CTRL+V paste images
@@ -923,7 +987,6 @@ jQuery(document).bind("core_pages.loaded core_blog.loaded editAsPage.loaded", fu
 			reader.readAsDataURL(blob);		
 		}
 	});
-
 	
 	//Give focus to an element inside a TV
 	jQuery(".template-variable", f).bind("mouseup.toolbar", function(event){ //On click

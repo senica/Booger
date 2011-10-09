@@ -63,7 +63,21 @@ function core_menus_init($obj){
 	$obj->options->count = (empty($obj->options->count)) ? 0 : $obj->options->count + 1;
 	$options = $obj->options;	
 	$columns = (!empty($options->columns))	? mysql_real_escape_string($options->columns)	: 'title,guid';
-	$parent  = (!empty($options->parent))	? mysql_real_escape_string($options->parent)	: '0';
+	//$parent  = (!empty($options->parent))	? mysql_real_escape_string($options->parent)	: '0';
+	
+	$parent = '';
+	if(!empty($options->parent)){
+		$parent = 'AND parent_id IN (SELECT id FROM '.PREFIX.'_content WHERE ('; //Make sure the parents have a status of published
+		if(is_numeric(trim($options->parent))){
+			$parent .= "id='".mysql_real_escape_string(trim($options->parent))."'";
+		}else if(is_array($options->parent)){
+			foreach($options->parent as $p){
+				$parent .= "id='".mysql_real_escape_string(trim($p))."' OR ";			 
+			}
+			$parent = substr($parent, 0, strlen($parent)-4);
+		}
+		$parent .= ") AND status = 'published' AND NOW() > publish_on)";
+	}
 	
 	$type = '';
 	if(!empty($options->type)){
@@ -96,7 +110,8 @@ function core_menus_init($obj){
 		$exclude .= ')';
 	}
 	
-	$query = "SELECT $columns,id FROM ".PREFIX."_content WHERE type = $type $include $exclude AND parent_id = '$parent' AND status='published' AND NOW() > publish_on";
+	$query = "SELECT $columns,id FROM ".PREFIX."_content WHERE type = $type $include $exclude $parent AND status='published' AND NOW() > publish_on";
+	//echo $query;
 	$results = $bdb->get_results($query);
 	if(!empty($results)){ 
 		$i = 1;

@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<div style="width:100%; background:#F93; padding:5px; text-align:center;">Please note that this website is being developed live and may not work!</div>
+<!-- <div style="width:100%; background:#F93; padding:5px; text-align:center;">Please note that this website is being developed live and may not work!</div> -->   
 <div id="top-bar-wrapper" class="color-1">
 	<div id="top-bar" class="font-color-1">
 		[global {'name':'top-bar-flag'}]

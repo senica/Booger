@@ -21,11 +21,11 @@ foreach($results as $result){
 			if($result->comment_type == "spam"){ echo '<a href="#" class="notspam">Not Spam</a>'; }else{ echo '<a href="#" class="spam">Spam</a>'; }
 		echo '</div>';
 		echo '<div class="date" style="font-size:small">'.$result->comment_date_gmt.'</div>';
-		echo '<div class="author"><strong>'.$result->comment_author.'</strong></div>';
-		echo '<div class="email" style="font-size:small">'.$result->comment_author_email.'</div>';
-		echo '<div class="website" style="font-size:small"><a href="'.$result->comment_author_url.'" target="_blank">'.$result->comment_author_url.'</a></div>';
+		echo '<div class="author"><strong>'.htmlentities($result->comment_author).'</strong></div>';
+		echo '<div class="email" style="font-size:small">'.htmlentities($result->comment_author_email).'</div>';
+		echo '<div class="website" style="font-size:small"><a href="'.htmlentities($result->comment_author_url).'" target="_blank">'.htmlentities($result->comment_author_url).'</a></div>';
 		echo '<div class="ip" style="font-size:small; margin-bottom:7px;">'.$result->comment_author_ip.'</div>';
-		echo '<div class="content">'.$result->comment_content.'</div>';
+		echo '<div class="content">'.htmlentities($result->comment_content).'</div>';
 	echo '</div>';	
 }
 ?>

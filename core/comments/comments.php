@@ -69,11 +69,11 @@ function core_comments_admin_css(){
 
 function core_comments_list($obj){
 	global $bg, $bdb;
+	$bg->add_css($bg->plugin_url(false)."/site-comments-list.css"); //If list is called, add css
 	$opt = $obj->options;
 	$count = (isset($opt->count)) ? $opt->count : 5;
 	//If page allows comments then show comment form
-	$result = $bdb->get_result("SELECT allow_comments FROM ".PREFIX."_content WHERE id = '".$bg->page_id."'");
-	if($result->allow_comments == 1){
+	if($bg->comments_allowed()){
 	echo '
 		<div class="comment-list">
 		<input type="hidden" class="pageid" value="'.$bg->page_id.'" />
@@ -89,6 +89,7 @@ function core_comments_list($obj){
 
 function core_comments_form($obj){
 	global $bg, $bdb;
+	$bg->add_css($bg->plugin_url(false)."/site-comments-form.css"); //If form is called, add css
 	$opt = $obj->options;
 	if($bg->user->id == 0){
 		$style = '';
@@ -104,8 +105,7 @@ function core_comments_form($obj){
 		$website = $bg->user->website;
 	}
 	//If page allows comments then show comment form
-	$result = $bdb->get_result("SELECT allow_comments FROM ".PREFIX."_content WHERE id = '".$bg->page_id."'");
-	if($result->allow_comments == 1){
+	if($bg->comments_allowed()){
 	echo '
 		<form class="comment-form-form">
 			<div class="logged-in-as" style="'.$login_style.'">Logged in as <strong>'.$name.'</strong> <span class="not-you">(<a href="#">not you?</a>)</span></div>

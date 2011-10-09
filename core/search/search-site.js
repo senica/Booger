@@ -1,3 +1,14 @@
+jQuery(".core-search-form").submit( function(event){
+	if(typeof this.flag === 'undefined'){
+		event.preventDefault();
+		this.flag = true; //submit on second go
+		var val = jQuery(this).find(".core-search-input:first").val();
+		val = val.replace(/\s/g, '+');
+		jQuery(this).attr("action", bg.url+'/search/'+val);
+		jQuery(this).submit();
+	}											 
+});
+
 jQuery(".core-search-form-wrapper").each( function(index, el){
 	var input = jQuery(".core-search-input", this);
 	var de = jQuery(".core-search-default", this);

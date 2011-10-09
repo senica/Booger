@@ -339,7 +339,7 @@ Usage: jQuery(selector).beautify({
 					if (typeof temp_token !== 'string') {
 					  return temp_token;
 					}
-					token = js_beautify(temp_token.replace(/^[\r\n]+/, ''), {
+					token = style_html(temp_token.replace(/^[\r\n]+/, ''), {
 					  'indent_size': this.indent_size,
 					  'indent_char': this.indent_character,
 					  'brace_style': this.brace_style

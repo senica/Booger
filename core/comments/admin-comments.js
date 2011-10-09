@@ -26,7 +26,7 @@ jQuery("#core-comments-sidebar-list .total, #core-comment-admin-dialog-comments"
 });
 
 //Approved Comments
-jQuery("#core-comments-sidebar-list .approved, #core-comment-admin-dialog-approved").click( function(){
+jQuery("#core-comments-sidebar-list .approved, #core-comment-admin-dialog-approved").live("click", function(){
 	jQuery("#core-comments-admin-tabs").tabs("select", 1);
 	jQuery("#core-comments-admin-dialog").dialog('open');
 	if(jQuery("#core-comments-admin-approved").html() == ""){
@@ -95,22 +95,22 @@ jQuery("#core-comments-sidebar-list .spam, #core-comment-admin-dialog-spam").cli
 });
 
 jQuery("#core-comments-admin-tabs .status a").live("click", function(){
-	var class = jQuery(this).attr("class");
+	var cls = jQuery(this).attr("class");
 	var button = jQuery(this);
 	var status = jQuery(this).parent();
 	var id = button.parents(".comment-wrapper:first").attr("dbid");
-	jQuery.post("/ajax.php?file=core/comments/admin-change-status.php", {id:id, status:class}, function(html){
+	jQuery.post("/ajax.php?file=core/comments/admin-change-status.php", {id:id, status:cls}, function(html){
 		if(html == "true"){
 			jQuery("span.pending", status).replaceWith('<a href="#" class="pending">Make Pending</a>');
 			jQuery("span.approved", status).replaceWith('<a href="#" class="approved">Approve</a>');
 			//jQuery("a.notspam", status).replaceWith('<a href="#" class="spam">Spam</a>');
-			if(class == "pending"){
+			if(cls == "pending"){
 				button.replaceWith('<span class="pending">Pending</span>');	
-			}else if(class == "approved"){
+			}else if(cls == "approved"){
 				button.replaceWith('<span class="approved">Approved</span>');
-			}else if(class == "spam"){
+			}else if(cls == "spam"){
 				button.replaceWith('<a href="#" class="notspam">Not Spam</a>');
-			}else if(class == "notspam"){
+			}else if(cls == "notspam"){
 				button.replaceWith('<a href="#" class="spam">Spam</a>');
 				console.log(jQuery(".pending", status));
 				jQuery(".pending", status).replaceWith('<span class="pending">Pending</span>');

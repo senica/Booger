@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+.comment-list .posted-by,
+.comment-list .posted-on,
+.comment-list .posted-by *, 
+.comment-list .posted-on *{ display:inline-block; }
+.comment-list .reply{ font-size:small; }
+.comment-list .comment-wrapper{ padding-bottom:8px; margin-bottom:8px; border-bottom:1px solid #ccc; }
+.comment-list .comment-text{ padding:10px; }
+

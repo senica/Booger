@@ -2,7 +2,7 @@
 <?php
 class Booger{
 	
-	public $hook,$shortcodes,$url_filter,$user,$server_ip,$remote_ip,$functions_acl,$cache;
+	public $hook,$shortcodes,$url_filter,$user,$server_ip,$remote_ip,$functions_acl,$cache,$content_filter;
 	public $guid,$url,$page_id,$called_guid; //Set in assets/url.php
 	public $settings; //Pulled from db _settings table
 	public $add_js, $add_css; //Added from $this->add_js, $this->add_css respectively
@@ -53,9 +53,10 @@ class Booger{
 		//Build List of Templates - May need to find a quicker way to do this.  I started doing it this way so users were free to put templates wherever they want in the theme directory
 		$this->templateTree(THEMES.'/'.THEME);
 		
-		//Preassign add_css and add_js
+		//Preassign variables
 		$this->add_css = array();
 		$this->add_js = array();
+		$this->content_filter = array();
 	}
 	
 	//Check if user is logged in
@@ -301,6 +302,32 @@ class Booger{
 		}
 	}
 	
+	/***********************************************************************
+	* Content Filter provides a way to alter the output content before
+	* it reaches the browser.  A good example of this is the reason it was
+	* created; that was to provide a way to execute php that has been added
+	* to a editable area
+	* $bg->content_filter('my_filter_func');
+	* function my_filter_func($content){ return $content; }
+	***********************************************************************/
+	
+	function content_filter($func=false){
+		if(!$func){ $this->error("Content Filters must contain at least one parameter: 1)What function to call and pass the content into."); return false; }
+		//Check Permissions on functions
+		//build_plugins.php will check to see if the the entire plugin is active and check for permission to the entire plugins.  Here we are concerned with individual functions.
+		//If function does not have explicit permissions, then include as public by default; is function active; do we have permission to access it.
+		if($this->user->alias != 'admin' && isset($this->functions_acl->{$func}) && ($this->functions_acl->{$func}->active == 0 || !array_key_exists($this->functions_acl->{$func}->permissions, $this->user->permissions)) ){ return false; }
+		array_push($this->content_filter, (object) array('func'=>$func));	
+	}
+	
+	function call_content_filter($content){
+		if(sizeof($this->content_filter) <= 0){ return $content; }
+		foreach($this->content_filter as $h){
+			$content = call_user_func($h->func, $content); //Reassign content from return of function
+		}
+		return $content;
+	}
+	
 	function add_shortcode($name=false, $func=false, $hooks=false){
 		//$hooks is an array of hooks that will be called.  At the writing of this we have 'call', 'add', 'firstcall'
 		//$func is not necessary now.  shortcodes with no func are considered template variables
@@ -461,6 +488,60 @@ class Booger{
 		$words = explode(' ', $text);
 		return implode(' ', array_slice($words, 0, $limit));	
 	}
+	
+	/********************************************************************
+	* $bg->is_child_of(parent)
+	* is the current page a child of parent 
+	********************************************************************/
+	function is_child_of($parent=0){
+		global $bdb;
+		$id = $this->page_id;
+		while(($result = $bdb->get_result("SELECT parent_id FROM ".PREFIX."_content WHERE id='".$id."'")) !== false){
+			$id = $result->parent_id;
+			if($id == $parent){ return true; }
+		};
+		return false;
+	}
+	
+	/********************************************************************
+	* $bg->comments_allowed()?
+	* check to see if comments are allowed on a page
+	********************************************************************/
+	function comments_allowed(){
+		global $bdb;
+		$result = $bdb->get_result("SELECT allow_comments FROM ".PREFIX."_content WHERE id = '".$this->page_id."'");
+		return ($result->allow_comments == 1) ? true : false; 
+	}
+	
+	/********************************************************************
+	* $bg->get_children_of(int parent, string columns, string type)
+	* Gets an array of children from a specified parent id
+	* By default, the array only contains the if of the children, you
+	* can modify this by including a comma separated list of columns to
+	* return.
+	* type is set for you to the same content type as the parent.  If
+	* you need only a specific type, you can specify that.
+	* Return is an array of objects such that:
+	* foreach($result as $r){ echo $r->id; }
+	********************************************************************/
+	function get_children_of($parent, $cols='id', $type=false){
+		global $bdb;
+		$list = array();
+		if(!$type){
+			$result = $bdb->get_result("SELECT type FROM ".PREFIX."_content WHERE id = '".$parent."'");
+			$type = $result->type;
+		}
+		$results = $bdb->get_results("SELECT ".$cols." FROM ".PREFIX."_content WHERE parent_id = '".$parent."' AND status='published' AND type='".$type."' AND NOW() > publish_on");
+		if(empty($results)){ return $list; }
+		else{
+			foreach($results as $r){
+				array_push($list, $r);
+				$list = array_merge($list, $this->get_children_of($r->id, $cols, $type));
+			}
+			return $list;
+		}
+		return false; //We shouldn't get here	
+	}
 }//end class
 
 /* Make instance of class */
@@ -485,11 +566,13 @@ function bg_build_header(){
 /* Define Javascript variables for Site Plugins to use */
 $bg->add_hook('site-head', 'bg_build_site_header');
 function bg_build_site_header(){
+	global $bg;
 	?>
 	<script type="text/javascript">
 		bg = {};
 		bg.url = '<?php echo URL; ?>';
 		bg.theme_url= '<?php echo URL.'/themes/'.THEME; ?>';
+		bg.guid = '<?php echo $bg->guid; ?>';
 	</script>
 	<?php			
 }//End bg_build_header()

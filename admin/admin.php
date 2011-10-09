@@ -29,8 +29,6 @@
 	<script type="text/javascript" src="<?php echo URL; ?>/assets/js/jquery-ui/jquery-ui-1.8.11.custom.min.js"></script>		
 	<script type="text/javascript" src="<?php echo URL; ?>/assets/js/jquery-ui/jquery-selectmenu.js"></script>
 	<script type="text/javascript" src="<?php echo URL; ?>/assets/js/jquery-extensions.js"></script>
-	<link type="text/css" href="<?php echo URL; ?>/assets/js/colorpicker/css/colorpicker.css" rel="stylesheet" />
-	<script type="text/javascript" src="<?php echo URL; ?>/assets/js/colorpicker/colorpicker.js"></script>
 	
 	<script type="text/javascript">
 		jQuery(document).ready( function(){

@@ -1,5 +1,28 @@
 @charset "utf-8";
 
+/*Code Block*/
+h3.doc-heading div.code > pre > code[data-default="D"]{ }
+
+/*Documentation Table*/
+table.doc-parameters > thead > tr > td.first[data-default="Property"] td[data-default="Type"] td.last[data-default="Description"]
+< < tbody > tr > td.first[data-default="D"] td.second.italic[data-default="D"] td.last[data-default="D"] 
+< < tfoot > tr > td[colspan="3"]{} 
+
+/*Documenation Heading 3*/
+/*Heading with a line under it*/
+h3.doc-heading{ color:#666; display:block; width:100%; padding:5px 0px 3px 0px; font-weight:bold; border-bottom:2px solid #666; margin-bottom:5px; }
+
+/*Documentation Notes*/
+div.doc-notes > div.red1 > div.red2 < div.doc-notes-header[data-default="Notes"] div.doc-notes-note[data-default="Note"]{}
+
+/*Unordered List*//*For Documentation*/
+div.doc-list > ul > li[data-default="List Item"]{}
+
+/*Unordered List*/
+ul > li{ }
+
+.italic{ font-style:italic; }
+
 .background-white{ background:#FFFFFF; }
 .background-dark-blue{ background:#144374; }
 .background-light-blue{ background:#3e77b3; }
@@ -21,11 +44,9 @@
 .float-left{ float:left; }
 .float-right{ float:right; }
 
-div pre code .code{ }
+/*Warning*/
+div.warning[data-default="Warning: "]{ background:#FF9; padding:7px; border:1px solid #FC3; }
 
-ul li{ }
 
-/*Documentation Table*/
-table.docs > thead > tr > td[data-default="Property"] td[data-default="Type"] td[data-default="Description for a test"][test="what is this"] < < tbody > tr > td td[colspan="2"]{} 
-div > img[src="/admin/images/booger_logo.png"] span[data-default="Here is an image"]{}
+
 
