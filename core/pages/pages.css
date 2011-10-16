@@ -1,6 +1,6 @@
 @charset "utf-8";
 /* CSS Document */
-.core-pages-sidebar-content{ /*padding-left:10px !important;*/  padding-right:0px !important; }
+.core-pages-sidebar-content{ /*padding-left:10px !important;*/  padding-right:0px !important; height:400px; overflow:hidden !important; }
 .core-pages-new-page{ cursor:pointer; white-space:nowrap; position:relative; border-bottom:1px solid #CCC; margin-bottom:5px; padding-bottom:5px; margin-right:1em !important; }
 .core-pages-new-page img{ position:absolute; top:0px; left:-25px; }
 .core-pages-new-page:hover{ color:#999; }
@@ -18,5 +18,5 @@
 .core-pages-sidebar-title-menu-content .options:hover{ color:#999; cursor:pointer; }
 .core-pages-sidebar-title-menu-content .arrow{ width:9px; height:11px; position:absolute; right:-9px; z-index:100; top:8px; background:url("./images/menu_arrow.png"); background-repeat:no-repeat; }
 
-
+#core-pages-sidebar-list{ height:95%; overflow:scroll; }
 #core-pages-tag-list .clear{ width:12px; height:12px; display:inline-block; background:url('images/clear.png'); margin-right:3px; }

@@ -912,7 +912,7 @@ jQuery(document).bind("core_pages.loaded core_blog.loaded editAsPage.loaded", fu
 		if(event.keyCode == 13 && event.ctrlKey){
 			//If the focus is inside a table row (TR), then duplicate the TR and insert it after the current TR
 			if(jQuery(core_toolbar.focus.focal).parents("tr:first")[0]){
-				var tr = jQuery(core_toolbar.focus.focal).parent("tr:first");
+				var tr = jQuery(core_toolbar.focus.focal).parents("tr:first");
 				tr.clone(true).insertAfter(tr);
 				
 			}

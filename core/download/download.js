@@ -2,7 +2,12 @@
 jQuery(".core-download").click( function(){
 	var parent = jQuery(this).parent();
 	var file = jQuery("input:checked", parent).val();
-	document.location.href = '/ajax.php?file=core/download/handle.php&get='+file;
+	var test = file.match(/^[http|https]/);
+	if(test === null){ //Handle files locally
+		document.location.href = '/ajax.php?file=core/download/handle.php&get='+file;
+	}else{ //open urls in new window
+		window.open(file);	
+	}
 	return false;
 });
 
