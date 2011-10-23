@@ -1,6 +1,9 @@
 @charset "utf-8";
 /* CSS Document */
 
+.ui-effects-wrapper{ display:inline-block !important; } /* overwrite for jQuery effects */
+.strikeout{ text-decoration:line-through; }
+
 body,html{ 
 	text-align:left; padding:20px;
 	background:#fcfcfc;

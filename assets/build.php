@@ -542,6 +542,23 @@ class Booger{
 		}
 		return false; //We shouldn't get here	
 	}
+	
+	/********************************************************************
+	* $bg->setting("setting_name", "optional value");
+	* if a value is passed in, then the setting_name will be added or
+	* updated in the database.
+	* if not value is passed in, then the db value will be passed back.
+	********************************************************************/
+	function setting($setting_name, $val=false){
+		global $bdb;
+		$result = $bdb->get_result("SELECT setting_name, setting_value, setting_id FROM ".PREFIX."_settings WHERE setting_name='".mysql_real_escape_string($setting_name)."'");
+		if($val === false){ return $result->setting_value; } //If no value, then return db value
+		else if(empty($result)){ //If not results, then insert
+			return $bdb->insert("settings", array("setting_name", $val));	
+		}else{ //otherwise update
+			return $bdb->update("settings", array("setting_name", $val), "setting_id='".$result->setting_id."'");
+		}
+	}
 }//end class
 
 /* Make instance of class */
