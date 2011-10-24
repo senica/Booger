@@ -1,7 +1,6 @@
 <?php
 //Make sure to mysql_real_string_escape all variables
 //Double quotes inside shortcodes need three backslashes
-
 $query = '
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -163,7 +162,7 @@ INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, 
 INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(16, 0, \'mail_port\', \'465\', 1);
 INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(17, 0, \'mail_user\', \'yourname@gmail.com\', 1);
 INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(18, 0, \'mail_password\', \'\', 1);
-INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(19, 0, \'version\', \'0.01\', 1);
+INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(19, 0, \'version\', \''.$version.'\', 1);
 INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(20, 0, \'update_server\', \'boogercms.org\', 1);
 INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(21, 0, \'site_default_template\', \'page.tpl.php\', 1);
 INSERT INTO `'.$db_prefix.'_settings` (`setting_id`, `site_id`, `setting_name`, `setting_value`, `onload`) VALUES(22, 0, \'site_category_content\', \'[page-list {\'\'loop\'\':2, \'\'length\'\':400, \'\'type\'\':\'\'post\'\', \'\'filter\'\':{\'\'category\'\':\'\'[page-id]\'\'}}]<div><br></div><div>[category-prev][category-next]</div>\', 1);

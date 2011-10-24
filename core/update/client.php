@@ -163,7 +163,8 @@ foreach($updates as $o){
 }
 msg("Updating version in database");
 $bg->setting("version", $update_tag->tag); //Update version
-msg("Update Successful");
+echo '<script>window.parent.core_update.done();</script>'; flush(); ob_flush(); usleep(10000);
+msg("Update Successful.  Refresh the admin.");
 ?>
 
 </body>

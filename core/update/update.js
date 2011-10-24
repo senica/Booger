@@ -35,13 +35,8 @@ core_update.cross = function(sha){
 }
 
 core_update.done = function(){
-	var status = jQuery("#core-update-admin-dialog .status");
-	jQuery("iframe", status).remove();
-	status = status.html();
-	jQuery("#core-update-admin-dialog").load("/ajax.php?file=core/update/check.php", function(){
-		jQuery(this).prepend("Your update was successful.<br />Please refresh any pages you are working on.<br /><br />");
-		jQuery("#core-update-admin-dialog .status").html(status);																					 
-	});
+	jQuery("#core-update-admin-dialog .iframe").remove();
+	jQuery("#core-update-admin-dialog .update").remove();																					 
 }
 
 jQuery("#core-update-admin-dialog .update").live("click", function(){

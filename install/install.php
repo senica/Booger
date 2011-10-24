@@ -1,4 +1,5 @@
 <?php
+$version = (isset($_GET['version'])) ? $_GET['version'] : '0.08'; //Change with version releases
 if(!isset($_POST['post'])){ die('This page should be accessed by <a href="index.php">/install/index.php</a>'); }
 foreach($_POST['post'] as $k=>$v){ ${$k} = $v['value']; }
 

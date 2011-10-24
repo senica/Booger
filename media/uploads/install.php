@@ -1,3 +1,7 @@
+<?php
+set_time_limit(0);
+ini_set('max_execution_time', 1200); //20 minutes
+?>
 <?php if(empty($_GET['action'])): ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -235,16 +239,19 @@ jQuery(document).ready( function(){
 		}
 		comet.process = function(response){
 			jQuery(".download-message").html(response.message);
-			if(response.action == "unzip"){
+			if(response.action == "download"){
 				jQuery(".list .download").wrapInner("<strike class='red'><span class='black'></span></strike>");
 			}
-			if(response.action == "delete-package"){
+			if(response.action == "write"){
+				jQuery(".list .write").wrapInner("<strike class='red'><span class='black'></span></strike>");
+			}
+			if(response.action == "unzip"){
 				jQuery(".list .unzip").wrapInner("<strike class='red'><span class='black'></span></strike>");
 			}
-			if(response.action == "delete-script"){
+			if(response.action == "delete-package"){
 				jQuery(".list .delete-package").wrapInner("<strike class='red'><span class='black'></span></strike>");
 			}
-			if(response.action == "move"){
+			if(response.action == "delete-script"){
 				jQuery(".list .delete-script").wrapInner("<strike class='red'><span class='black'></span></strike>");
 			}
 			if(response.action == "done"){
@@ -262,9 +269,10 @@ jQuery(document).ready( function(){
 		Please backup any data on your server before proceeding.<br/><br />
 		This Install Script will:
 		<ol class="list">
-			<li class="download">Download an installation package from boogercms.org</li>
-			<li class="unzip">Unzip the package onto your server</li>
-			<li class="delete-package">Delete the package</li>
+			<li class="download">Download Install Package</li>
+			<li class="write">Write Package to Server</li>
+			<li class="unzip">Extract Install Package</li>
+			<li class="delete-package">Delete Install Package</li>
 			<li class="delete-script">Delete this installation script</li>
 			<li class="move">Take you to the installation page</li>
 		</ol>
@@ -290,102 +298,157 @@ if($_GET['action'] == "fetch"){
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	</head>
 	<body>
+	
+	
 	<?php	
-	echo '<script>var comet = window.parent.comet;</script>';
-	function send($message, $action=false, $speed='slow'){ echo '<script>comet.process({message:"'.$message.'", action:"'.$action.'"});</script>'; flush(); if($speed == 'slow'){ sleep(1); }else{ usleep(1000); } }
+	$site_dir = preg_replace('@\\\@', '/', dirname(__FILE__)); //Fix windows backslashes
+	define('SITE', $site_dir);
 	
-	function dec($value){
-		$value = base_convert(bin2hex($value), 16, 10);
-		return $value;
-	}
-	
-	function hex2bin($data) {
-		$len = strlen($data);
-		$newdata = '';
-		for($i=0;$i<$len;$i+=2) {
-			$newdata .= pack("C",hexdec(substr($data,$i,2)));
+	class Github{
+		var $prefix = 'api';
+		var $errors = array();
+		var $url, $repo, $user, $branch;
+		
+		function __construct($user='', $repo='', $branch=''){
+			$this->user = $user;
+			$this->repo = $repo;
+			$this->branch = $branch;
 		}
-	   return $newdata;
+		
+		//http://developer.github.com/v3/git/refs/
+		public function refs($ref=false){
+			$ref = (!empty($ref)) ? '/'.$ref : $ref;
+			$this->url = 'repos/'.$this->user.'/'.$this->repo.'/git/refs'.$ref;
+			return $this->com();
+		}
+		
+		//http://developer.github.com/v3/git/refs/
+		public function tags($tag=false){
+			$tag = (!empty($tag)) ? '/'.$tag : $tag;
+			return $this->refs('tags'.$tag);	
+		}
+		
+		//http://developer.github.com/v3/git/tags/
+		public function tag($sha=''){
+			$this->url = 'repos/'.$this->user.'/'.$this->repo.'/git/tags/'.$sha;
+			return $this->com();
+		}
+		
+		private function error($err){
+			array_push($this->errors, $err);
+		}
+		
+		//Get response from Github
+		private function com(){
+			$fp = fsockopen("ssl://".$this->prefix.".github.com", 443, $errno, $errstr, 30);
+			if (!$fp){ $this->error('Could not connect to Github'); return false; }
+			$out = "GET /".$this->url." HTTP/1.1\r\n";
+			$out .= "Host: ".$this->prefix.".github.com\r\n";
+			$out .= "Connection: Close\r\n\r\n";
+			fwrite($fp, $out);
+			$buffer = '';
+			while (!feof($fp)) {
+				$buffer .= fgets($fp, 128);
+			}
+			fclose($fp);
+			preg_match("/^content-length:\s*(\d+)\s*$/mi", $buffer, $matches);
+			$length = $matches[1];	
+			$content = substr($buffer, $length*-1, $length);
+			switch($this->prefix){
+				case "api":
+					return json_decode($content);
+					break;
+				case "raw":
+					return $content;
+					break;
+			}		
+		}
 	}
 	
-	function inflate($package){
-		if(!file_exists($package)){ send("Package not located."); die(); }
-		$content = file_get_contents($package);
-		$pointer = 0;
-		$checksum = dec(substr($content, -4));
-		$realsize = filesize($package) - 4; //Minus the checksum
-		send("Checksum: ".$checksum." bytes");
-		send("Actual Filesize: ".$realsize." bytes");
-		if($realsize != $checksum){ send("Malformed Package"); die(); }
-		else{
-			$content = substr($content, 0, strlen($content)-4); //Remove the checksum
-			while($pointer < strlen($content)){
-				$type	= bin2hex(substr($content, $pointer, 2)); $pointer+=2; //0a00 - file or 0a01 - directory
-				$length	= dec(substr($content, $pointer, 2)); $pointer+=2;
-				$file	= substr($content, $pointer, $length); $pointer+=$length;
-				if($type == '0a01'){ //Directory
-					//Make directory
-					send("Creating directory ".$file, false, 'fast');
-					if(mkdir($file, 0755) === false){ send("Failed ".$file); die(); }
-				}else if($type == '0a00'){ //File
-					send("Inflating file ".$file, false, 'fast');
-					$size_of_content	= dec(substr($content, $pointer, 4)); $pointer+=4;
-					$data				= substr($content, $pointer, $size_of_content); $pointer+=$size_of_content;	
-					if(file_put_contents($file, $data) === false){ send("Failed ".$file); die(); }
-				}else{ //Error
-					send("Package is Malformed"); die();
-				}
-			}//End while
-			return true;
-		}//End checksum test
+	function send($message, $action=false, $speed='slow'){ echo '<script>window.parent.comet.process({message:"'.$message.'", action:"'.$action.'"});</script>'; flush(); if($speed == 'slow'){ sleep(1); }else{ usleep(1000); } }
+		
+	function com(){
+		$fp = fsockopen("ssl://nodeload.github.com", 443, $errno, $errstr, 30);
+		if (!$fp){ send("Could not connect to Github. Install failed."); die(); }
+		$out = "GET /senica/Booger/zipball/master HTTP/1.1\r\n";
+		$out .= "Host: nodeload.github.com\r\n";
+		$out .= "Connection: Close\r\n\r\n";
+		fwrite($fp, $out);
+		$buffer = '';
+		while (!feof($fp)) {
+			$buffer .= fgets($fp, 128);
+		}
+		fclose($fp);
+		$count = preg_match("/^content-length:\s*(\d+)\s*$/mi", $buffer, $matches);
+		if($count == 0){ send("Failed to receive package. Install failed."); die(); return false; }
+		$length = $matches[1];	
+		$content = substr($buffer, $length*-1, $length);
+		return $content;		
 	}
 	
-	$domain	= "www.boogercms.org";
-	$file	= "booger.pkg";
-	$loc	= "/media/uploads/".$file;
+	send("Checking version");
 	
-	send("Opening connection to ".$domain);
-	$fp = fsockopen($domain, 80, $errno, $errstr, 30);
-	if (!$fp){ send("Could not connect to".$domain); die(); }
-	send("Connection opened");
-	send("Requesting package ".$loc);
-	$out = "GET ".$loc." HTTP/1.1\r\n";
-	$out .= "Host: ".$domain."\r\n";
-	$out .= "Connection: Close\r\n\r\n";
-	fwrite($fp, $out);
-	$buffer = '';
-	send("Receiving response");
-	while (!feof($fp)) {
-		$buffer .= fgets($fp, 128);
-	}
-	fclose($fp);
-	preg_match("/^content-length:\s*(\d+)\s*$/mi", $buffer, $matches);
-	$length = $matches[1];
-	if($length <= 5){ send("Package does not exist or refused by server."); die(); } //Allow for some padding but not big enough for a file
-	send("Package received");
-	$content = substr($buffer, $length*-1, $length);
-	send("Writing package to your server");
-	if(file_put_contents($file, $content) === false){
-		send("Cannot write to this directory.  Check your permissions."); die();	
+	$github = new Github('senica', 'Booger', 'master'); //user, Repository, Branch
+
+	$update_tags = end($github->tags()); //Get most recent version object from tags list
+	$update_tag = $github->tag($update_tags->object->sha); //Get tag object
+	
+	send("Latest version ".$update_tag->tag);
+	
+	send("Grabbing install package for version ".$update_tag->tag);
+	$content = com();
+	send("Package received", "download");
+	
+	$archive = uniqid().".zip";
+	send("Writing package ".$archive." to server");
+	$test = file_put_contents(SITE.'/'.$archive, $content);
+	if($test === false){
+		send("Could not write package. Install failed."); die();	
 	}else{
-		send("Okay","unzip");
-		send("Unpacking");
-		if(inflate($file) !== true){ send("Unknown error."); die(); }
-		send("Okay", "delete-package");
-		send("Deleting ".$file);
-		if(unlink($file) !== false){
-			send("Okay", "delete-script");	
-		}
-		send("Deleting download manager");
-		if(!unlink(__FILE__)){ send("Could not remove download manager"); }
-		send("Okay", "move");
-		send("Forwarding to installer");
-		if(!file_exists("./install/index.php")){
-			send("Installer does not exist"); die();	
-		}else{
-			send("Finished", "done");
-			echo '<script>window.parent.document.location = "install/index.php"</script>'; sleep(1);
-		}
+		send("Package written successfully", "write");	
+	}
+	
+	send("Opening package ".$archive);
+	
+	$zip = new ZipArchive;
+	if ($zip->open(SITE.'/'.$archive) === TRUE) {
+		$first = $zip->getNameIndex(0);
+		for($i=1; $i<$zip->numFiles; $i++) {					 
+			$name = str_replace($first, "", $zip->getNameIndex($i));
+			$zip->renameName($zip->getNameIndex($i), $name);
+			send("Extracting ".$name, false, 'fast');
+			if($zip->extractTo(SITE.'/', $name) === false){
+				send("Failed to extract ".$name); die();		
+			}
+			send($name." extracted", false, 'fast');
+		}		
+		$zip->close();
+		send("Package successfully unpacked", "unzip");
+	} else {
+		send("Unpacking failed.  Install failed."); die();
+	}
+	
+	send("Deleting package ".$archive);
+	if(!unlink(SITE.'/'.$archive)){
+		send("Failed to delete package ".$archive);
+	}else{
+		send("Package deleted", "delete-package");	
+	}
+	
+	send("Deleting ".__FILE__);
+	if(!unlink(__FILE__)){
+		send("Failed to delete ".__FILE__);
+	}else{
+		send("Install script deleted", "delete-script");	
+	}
+
+	send("Forwarding to installer");
+	
+	if(!file_exists(SITE."/install/index.php")){
+		send("Installer does not exist. Install failed."); die();	
+	}else{
+		send("Finished", "done");
+		echo '<script>window.parent.document.location = "install/index.php?version='.$update_tag->tag.'"</script>'; sleep(1);
 	}
 	?>
 	</body>

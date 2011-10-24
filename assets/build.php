@@ -554,9 +554,9 @@ class Booger{
 		$result = $bdb->get_result("SELECT setting_name, setting_value, setting_id FROM ".PREFIX."_settings WHERE setting_name='".mysql_real_escape_string($setting_name)."'");
 		if($val === false){ return $result->setting_value; } //If no value, then return db value
 		else if(empty($result)){ //If not results, then insert
-			return $bdb->insert("settings", array("setting_name", $val));	
+			return $bdb->insert("settings", array("setting_name"=>$setting_name, "setting_value"=>$val));	
 		}else{ //otherwise update
-			return $bdb->update("settings", array("setting_name", $val), "setting_id='".$result->setting_id."'");
+			return $bdb->update("settings", array("setting_value"=>$val), "setting_id='".$result->setting_id."'");
 		}
 	}
 }//end class

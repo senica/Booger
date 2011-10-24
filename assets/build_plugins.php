@@ -2,7 +2,7 @@
 <?php
 function build_plugins($dirpath){
 	global $bg, $plugins;
-	$files = scandir($dirpath);
+	$files = @scandir($dirpath);
 	foreach($files as $file){
 		//Check for unset plugins.  Allow plugins to set themeselves up with firstrun.php
 		if( !isset($plugins->{$file}) && is_dir($dirpath.'/'.$file) && file_exists($dirpath.'/'.$file.'/firstrun.php') ){
