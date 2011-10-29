@@ -288,7 +288,8 @@ class Booger{
 		//Check Permissions on functions
 		//build_plugins.php will check to see if the the entire plugin is active and check for permission to the entire plugins.  Here we are concerned with individual functions.
 		//If function does not have explicit permissions, then include as public by default; is function active; do we have permission to access it.
-		if($this->user->alias != 'admin' && isset($this->functions_acl->{$func}) && ($this->functions_acl->{$func}->active == 0 || !array_key_exists($this->functions_acl->{$func}->permissions, $this->user->permissions)) ){ return false; }
+		//is_string was added so closures could be written into hooks. NO security is imposed on closures
+		if($this->user->alias != 'admin' && is_string($func) && isset($this->functions_acl->{$func}) && ($this->functions_acl->{$func}->active == 0 || !array_key_exists($this->functions_acl->{$func}->permissions, $this->user->permissions)) ){ return false; }
 		$this->hook[$where][] = (object) array('func'=>$func, 'options'=>$options);	
 	}
 	
@@ -419,7 +420,7 @@ class Booger{
 	
 	//Get plugin url...only to be called from within a plugins main file
 	function plugin_url($display=true, $showfile=false, $dir=true){
-		$call = debug_backtrace(false, 1);
+		$call = @debug_backtrace(false, 1);
 		$file = $call[0]['file'];
 		if($dir === true){ $file = preg_replace('@\\\@', '/', dirname($file)); }
 		$url = str_replace(SITE, URL, $file);
@@ -557,6 +558,20 @@ class Booger{
 			return $bdb->insert("settings", array("setting_name"=>$setting_name, "setting_value"=>$val));	
 		}else{ //otherwise update
 			return $bdb->update("settings", array("setting_value"=>$val), "setting_id='".$result->setting_id."'");
+		}
+	}
+	
+	/********************************************************************
+	* $bg->get_chunk(string chunk_name, int page_id)
+	* page_id is optional.  If omitted, the current page will be used 
+	********************************************************************/
+	function get_chunk($chunk_name, $page_id=false){
+		global $bdb;
+		$page_id = ($page_id === false) ? $this->page_id : $page_id;
+		$result = $bdb->get_result("SELECT content FROM ".PREFIX."_content WHERE id='".mysql_real_escape_string($page_id)."'");
+		if(!empty($result)){
+			$content = unserialize($result->content);
+			return $content[$chunk_name];
 		}
 	}
 }//end class
