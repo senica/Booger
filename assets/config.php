@@ -33,7 +33,7 @@ class DB{
 	//The result is a pointer to be used in things like mysql_num_rows($this->result)
 	var $error, $debug, $lnk, $count=0, $result; 
 	
-	function __construct($server, $user, $pass, $db){
+	function __construct($server, $user, $pass, $db, $key=false){
 		$this->error = array();
 		$link = @mysql_connect($server, $user, $pass);
 		if(!$link){
@@ -46,6 +46,7 @@ class DB{
 			}
 		}
 		$this->lnk = $link;
+		$this->key = $key;
 		mysql_select_db($db, $this->lnk);
 	}
 	
@@ -142,10 +143,20 @@ class DB{
 		array_push($this->error, $error);	
 	}
 	
+	function encrypt($string){
+		$q = $this->get_result("SELECT HEX(AES_ENCRYPT('".mysql_real_escape_string($string)."', '".$this->key."')) as my_key");
+		if(!$q){ return false; }else{ return $q->my_key; }
+	}
+	
+	function decrypt($string){ //Binary String
+		$q = $this->get_result("SELECT AES_DECRYPT(BINARY(UNHEX('".mysql_real_escape_string($string)."')), '".$this->key."') as my_key");
+		if(!$q){ return false; }else{ return $q->my_key; }
+	}
+	
 }
 
 //Initialize $bdb
-$bdb = new DB($bg_server, $bg_user, $bg_pass, $bg_db);
+$bdb = new DB($bg_server, $bg_user, $bg_pass, $bg_db, $bg_key);
 
 
 /* Messaging and Errors for System */

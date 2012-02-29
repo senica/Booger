@@ -10,6 +10,9 @@ $bg->add_shortcode('sitefoot', 'core_sitefoot_init');
 
 function core_sitefoot_init(){
 	global $bg;
-	$bg->call_hook('site-foot');	
+	echo '<!-- This div contains the output of items added to the site-foot hook -->
+			<div class="bg-site-foot-hook" style="display:none;">';
+			$bg->call_hook('site-foot');
+	echo '</div>';	
 }
 ?>

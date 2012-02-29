@@ -37,19 +37,19 @@ function core_forms_func($obj){
 	switch($opt->type){
 			
 		case 'text':
-			echo '<input class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" type="text" name="'.$opt->name.'" value="'.$opt->value.'" />';
+			echo '<input class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" type="text" name="'.$opt->name.'" value="'.$opt->value.'" />';
 			break;
 			
 		case 'password':
-			echo '<input class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" type="password" name="'.$opt->name.'" value="'.$opt->value.'" />';
+			echo '<input class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" type="password" name="'.$opt->name.'" value="'.$opt->value.'" />';
 			break;
 			
 		case 'hidden':
-			echo '<input class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" type="hidden" name="'.$opt->name.'" value="'.$opt->value.'" />';
+			echo '<input class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" type="hidden" name="'.$opt->name.'" value="'.$opt->value.'" />';
 			break;
 			
 		case 'select':
-			echo '<select class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" name="'.$opt->name.'">';
+			echo '<select class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" name="'.$opt->name.'">';
 				foreach($opt->options as $k=>$v){
 					echo '<option value="'.$v.'">'.$k.'</option>';	
 				}
@@ -57,24 +57,24 @@ function core_forms_func($obj){
 			break;
 			
 		case 'checkbox':
-			echo '<input class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" type="checkbox" name="'.$opt->name.'" value="'.$opt->value.'" '.((!empty($opt->checked)) ? 'checked' : '').' />';
+			echo '<input class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" type="checkbox" name="'.$opt->name.'" value="'.$opt->value.'" '.((!empty($opt->checked)) ? 'checked' : '').' />';
 			break;
 			
 		case 'textarea':
-			echo '<textarea class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" name="'.$opt->name.'">'.$opt->value.'</textarea>';
+			echo '<textarea class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" name="'.$opt->name.'">'.$opt->value.'</textarea>';
 			break;
 		
 		case 'image':
-			echo '<input class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" type="image" name="'.$opt->name.'" src="'.$opt->value.'" />';
+			echo '<input class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" type="image" name="'.$opt->name.'" src="'.$opt->value.'" />';
 			break;
 		
 		case 'submit':
-			echo '<input class="'.$opt->ref.' '.((isset($opt->req))?'required':'').'" type="submit" name="'.$opt->name.'" value="'.$opt->value.'" />';
+			echo '<input class="'.$opt->ref.' '.$opt->class.' '.((isset($opt->req))?'required':'').'" type="submit" name="'.$opt->name.'" value="'.$opt->value.'" />';
 			break;
 			
 		case 'message':
 			//Made the following into an input field so it can be watched with js for a change
-			echo '<div class="'.$opt->ref.' forms-message"><input class="'.$opt->ref.' forms-message-input" type="text" readonly="readonly" value="" style="border:0; background:none;" /></div>';
+			echo '<div class="'.$opt->ref.' '.$opt->class.' forms-message"><input class="'.$opt->ref.' forms-message-input" type="text" readonly="readonly" value="" style="border:0; background:none;" /></div>';
 			if(isset($opt->pending)){ $bg->core_forms[$opt->ref]['message']['pending'] = $opt->pending; }
 			if(isset($opt->complete)){ $bg->core_forms[$opt->ref]['message']['complete'] = $opt->complete; }
 			if(isset($opt->error)){ $bg->core_forms[$opt->ref]['message']['error'] = $opt->error; }

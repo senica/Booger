@@ -302,6 +302,10 @@ jQuery(".core-pages-sidebar-title-menu .edit").live("click", function(){
 		jQuery(bg.pages).append('<div class="bg-admin-page" rel="'+t+'"><iframe rel="'+t+'" dbid="'+p.attr("rel")+'" src="'+loc+'?noparse" onLoad="jQuery.iframeResize(this); core_pages.events(this);"></iframe></div>');
 		jQuery("#bg-admin-bottom-bar-col-one").append('<div id="" class="bg-admin-tab" rel="'+t+'" alt="'+alt+'" dbid="'+p.attr("rel")+'">'+p.attr("dtitle")+'<div class="bg-admin-tab-menu-wrapper"><div class="bg-admin-tab-menu"><div class="arrow"></div><div class="title">'+alt+'</div><hr /><div class="refresh">Refresh</div><div class="close">Close</div><div class="save">Save</div></div></div></div>');
 		
+		/*jQuery(".bg-admin-page[rel='"+t+"']").load( function(){
+			alert("loading");												
+		});*/
+		
 		//Handle Saving of file
 		jQuery(".bg-admin-tab[rel='"+t+"'] .save").live("click", function(){
 			var save = jQuery(this);

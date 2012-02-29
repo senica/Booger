@@ -603,6 +603,7 @@ function bg_build_site_header(){
 	<script type="text/javascript">
 		bg = {};
 		bg.url = '<?php echo URL; ?>';
+		bg.theme_dir= '<?php echo THEMES.'/'.THEME; ?>';
 		bg.theme_url= '<?php echo URL.'/themes/'.THEME; ?>';
 		bg.guid = '<?php echo $bg->guid; ?>';
 	</script>

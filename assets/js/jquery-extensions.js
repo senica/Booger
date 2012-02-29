@@ -2,8 +2,8 @@
 
 //Resize iframe
 jQuery.iframeResize = function(el){
-	el.width = document.width+'px';
-	el.height = document.height-28+'px';
+	el.width = jQuery(window).width();
+	el.height = jQuery(window).height()-28;
 }
 
 /*************************************************

@@ -23,7 +23,8 @@ $dir = $dir[count($dir)-1];
 //Authorization exceptions to files. Public should always be allowed to access these files regardless of ACL
 $exceptions = array("admin/auth.php", "admin/login.php", "admin/logout.php", "admin/verify_cookies.php");
 
-if(!in_array($file, $exceptions) && $bg->user->alias != 'admin'){ //Allow the admin alias to bypass everything
+//Only check files in the plugins or core directories
+if(!in_array($file, $exceptions) && $bg->user->alias != 'admin' && (stristr(dirname($file), CORE) || stristr(dirname($file), PLUGINS) )){ //Allow the admin alias to bypass everything
 	$user = unserialize($bg->settings->user_plugins);
 	$core = unserialize($bg->settings->core_plugins);
 	$facl = unserialize($bg->settings->files_acl);
