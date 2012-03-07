@@ -1,0 +1,6 @@
+#stripe-payment-form label{ width:150px; display:inline-block; }
+#stripe-payment-form .message-wrapper{ display:none; position:relative; height:50px; }
+#stripe-payment-form .message{ display:none; position:absolute; border:1px solid #fff; padding:7px; margin:5px 0; }
+#stripe-payment-form .message.error{ background:#F99; border-color:#ff6666; }
+#stripe-payment-form .message.working{ background:#a2dbf5; border-color:#4d9fc4; }
+#stripe-payment-form .message.ok{ background:#9effa3; border-color:#6cd071; }

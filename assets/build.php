@@ -420,7 +420,7 @@ class Booger{
 	
 	//Get plugin url...only to be called from within a plugins main file
 	function plugin_url($display=true, $showfile=false, $dir=true){
-		$call = @debug_backtrace(false); //PHP 5.4 allows for second parameter 1
+		$call = @debug_backtrace(false);  //PHP 5.4 allows for second parameter 1
 		$file = $call[0]['file'];
 		if($dir === true){ $file = preg_replace('@\\\@', '/', dirname($file)); }
 		$url = str_replace(SITE, URL, $file);
